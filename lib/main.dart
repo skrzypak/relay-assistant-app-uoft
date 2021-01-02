@@ -1,3 +1,5 @@
+import 'package:app/screens/controller.dart';
+import 'package:app/screens/countdown.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,49 +14,58 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  HomePage({Key key}) : super(key: key);
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
+class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
+  final List<Widget> _children = [
+    ControllerScreen(),
+    CountdownScreen(),
+    ControllerScreen(),
+    CountdownScreen(),
+  ];
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
       child: SafeArea(
         child: Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'You have pushed the button this many times:',
-                ),
-                Text(
-                  '$_counter',
-                  style: Theme.of(context).textTheme.headline4,
-                ),
-              ],
-            ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: _incrementCounter,
-            tooltip: 'Increment',
-            child: Icon(Icons.add),
+          body: _children[_currentIndex],
+          bottomNavigationBar: BottomNavigationBar(
+            onTap: (int idx) {
+              setState(() {
+                _currentIndex = idx;
+              });
+            },
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.point_of_sale),
+                label: 'Controller',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.av_timer),
+                label: 'Countdown',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.repeat),
+                label: 'Repeat',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.schedule),
+                label: 'Timetable',
+              ),
+            ],
+            type: BottomNavigationBarType.fixed,
+            currentIndex: _currentIndex,
           ),
         ),
       ),
