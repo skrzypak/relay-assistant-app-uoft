@@ -1,5 +1,7 @@
 import 'package:app/screens/controller.dart';
 import 'package:app/screens/countdown.dart';
+import 'package:app/screens/repeat.dart';
+import 'package:app/screens/timetable.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -30,8 +32,8 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _children = [
     ControllerScreen(),
     CountdownScreen(),
-    ControllerScreen(),
-    CountdownScreen(),
+    RepeatScreen(),
+    TimetableScreen(),
   ];
   @override
   Widget build(BuildContext context) {
