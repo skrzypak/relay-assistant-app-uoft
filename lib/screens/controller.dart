@@ -2,11 +2,19 @@ import 'package:flutter/material.dart';
 
 class ControllerScreen extends StatefulWidget {
   ControllerScreen({Key key}) : super(key: key);
+  final Map<String, int> _sockets = {
+    "USB": 0,
+    "FIRST": 1,
+    "SECOND": 2,
+    "THIRD": 3
+  };
   @override
   _ControllerScreen createState() => _ControllerScreen();
 }
 
 class _ControllerScreen extends State<ControllerScreen> {
+  List<bool> _socketState = List.generate(4, (_) => false);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -23,26 +31,44 @@ class _ControllerScreen extends State<ControllerScreen> {
   }
 
   List<Widget> _buildHomeSocketsButtons() {
-    List<String> _names = ['usb', 'first', 'second', 'third'];
     var _build = <Widget>[];
-    _names.asMap().forEach((index, name) {
+    widget._sockets.forEach((key, value) {
       return _build.add(
-          _buildButton(name, () => (print("Click socket $index")))
-      );
+          _buildButton(key, value, () {
+            print("Click socket $value");
+            // TODO TEST ONLY
+            setState(() {
+              _socketState[value] = ! _socketState[value];
+            });
+          }));
     });
-    // ENABLE ALL
-    _build.add(
-        _buildButton("ENABLE", () => (print("Click enable")))
-    );
     // DISABLE ALL
     _build.add(
-        _buildButton("DISABLE", () => (print("Click disable")))
+        _buildButton("DISABLE", -1, () {
+          print("Click disable");
+          // TODO TEST ONLY
+          setState(() {
+            for(int i = 0; i < _socketState.length; i++)
+              _socketState[i] = false;
+          });
+        })
+    );
+    // ENABLE ALL
+    _build.add(
+        _buildButton("ENABLE", -1, () {
+          print("Click enable");
+          // TODO TEST ONLY
+          setState(() {
+            for(int i = 0; i < _socketState.length; i++)
+              _socketState[i] = true;
+          });
+        })
     );
     return _build;
   }
 
 
-  Widget _buildButton(String name, Function func) =>
+  Widget _buildButton(String name, int index, Function func) =>
     new GestureDetector(
       onTap: () => func(),
       child: Padding(
@@ -67,10 +93,21 @@ class _ControllerScreen extends State<ControllerScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Icon(
-                  Icons.power_settings_new,
-                  size: 45,
-                ),
+                child: () {
+                  if((index >= 0 && _socketState[index]) || name == "ENABLE") {
+                    return Icon(
+                      Icons.power,
+                      size: 45,
+                      color: Colors.green,
+                    );
+                  } else {
+                    return Icon(
+                      Icons.power_off,
+                      size: 45,
+                      color: Colors.red,
+                    );
+                  }
+                }(),
               ),
               Text(
                 name.toUpperCase(),
