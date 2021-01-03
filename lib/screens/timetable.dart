@@ -1,3 +1,4 @@
+import 'package:app/screens/controller.dart';
 import 'package:flutter/material.dart';
 
 class TimetableScreen extends StatefulWidget {
@@ -14,16 +15,157 @@ class _TimetableScreen extends State<TimetableScreen> {
       body: Container(
         child: ListView(
           children: [
+            _buildInitCard(),
             _buildCard("usb"),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print("TODO:// go to page: new timetable");
+          print("TODO:// send timetable data");
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.send),
       ),
+    );
+  }
+
+  Widget  _buildInitCard() {
+    return new Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Table(children: [
+              TableRow(children: [
+                SizedBox(
+                  height: 48,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("SELECT SOCKET", style: TextStyle(
+                      fontSize: 16,
+                    )),
+                  ),
+                ),
+                DropdownButton<String>(
+                  value: 'FIRST'.toUpperCase(),
+                  iconSize: 0,
+                  elevation: 0,
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                  onChanged: (String newValue) {
+                    setState(() {
+                      //dropdownValue = newValue;
+                    });
+                  },
+                  items: <String>['USB', 'FIRST', 'SECOND', 'THIRD']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value.toUpperCase(),
+                      child: Text(value.toUpperCase()),
+                    );
+                  }).toList(),
+                )
+              ]),
+              TableRow(children: [
+                SizedBox(
+                  height: 48,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                      child: Text("SELECT DAY", style: TextStyle(
+                        fontSize: 16,
+                      )),
+                  ),
+                ),
+                DropdownButton<String>(
+                  value: 'MONDAY'.toUpperCase(),
+                  iconSize: 0,
+                  elevation: 0,
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                  onChanged: (String newValue) {
+                    setState(() {
+                      //dropdownValue = newValue;
+                    });
+                  },
+                  items: <String>['SUNDAY', 'MONDAY', 'TUESDAY',
+                    'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value.toUpperCase(),
+                      child: Text(value.toUpperCase()),
+                    );
+                  }).toList(),
+                )
+              ]),
+              TableRow(children: [
+                SizedBox(
+                  height: 48,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("SELECT TIME", style: TextStyle(
+                      fontSize: 16,
+                    )),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    print("TODO:// timer");
+                  },
+                  child: SizedBox(
+                    height: 48,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("00:00", style: TextStyle(
+                        fontSize: 16,
+                      )),
+                    ),
+                  ),
+                ),
+              ]),
+              TableRow(children: [
+                SizedBox(
+                  height: 48,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("SELECT STATE", style: TextStyle(
+                      fontSize: 16,
+                    )),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    print("TODO:// change state icon");
+                  },
+                  child: SizedBox(
+                    height: 48,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(
+                        Icons.power,
+                        size: 45,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ),
+                ),
+              ]),
+              TableRow(children: [
+                MaterialButton(
+                  child: Text("REST"),
+                  onPressed: () {
+                    print("TODO:// reset");
+                  },
+                ),
+                MaterialButton(
+                  child: Text("ADD"),
+                  onPressed: () {
+                    print("TODO:// add");
+                  },
+                ),
+              ]),
+              ],
+            ),
+          ],
+        )
+      )
     );
   }
 
