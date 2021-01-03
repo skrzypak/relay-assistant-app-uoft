@@ -14,7 +14,7 @@ class _TimetableScreen extends State<TimetableScreen> {
       body: Container(
         child: ListView(
           children: [
-            _buildCard("monday"),
+            _buildCard("usb"),
           ],
         ),
       ),
@@ -43,51 +43,7 @@ class _TimetableScreen extends State<TimetableScreen> {
                   ),
                 ),
               ),
-              // Record
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        print("TODO:// update timetable element");
-                      },
-                      child: Row(
-                        children: [
-                          Text(
-                            "00:00",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 25,
-                            ),
-                          ),
-                          Icon(
-                            Icons.power,
-                            size: 25,
-                            color: Colors.green,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width: 35,
-                      height: 35,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Icon(
-                          Icons.delete,
-                          size: 25,
-                          color: Colors.red,
-                        ),
-                        onTap: () {
-                          print("TODO:// delete timetable item");
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              _buildDayOfWeekContent("monday"),
               SizedBox(
                 width: 35,
                 height: 35,
@@ -104,7 +60,73 @@ class _TimetableScreen extends State<TimetableScreen> {
                 ),
               ),
             ],
-          )),
+          )
+      ),
+    );
+  }
+
+  Widget _buildDayOfWeekContent(String name) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                name.toUpperCase(),
+                style: TextStyle(fontSize: 16.0),
+              ),
+            ),
+          ),
+          // Record
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InkWell(
+                  onTap: () {
+                    print("TODO:// update timetable element");
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        "00:00",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 25,
+                        ),
+                      ),
+                      Icon(
+                        Icons.power,
+                        size: 25,
+                        color: Colors.green,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 35,
+                  height: 35,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Icon(
+                      Icons.delete,
+                      size: 25,
+                      color: Colors.red,
+                    ),
+                    onTap: () {
+                      print("TODO:// delete timetable item");
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

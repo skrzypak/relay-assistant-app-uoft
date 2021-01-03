@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CountersScreen extends StatefulWidget {
   CountersScreen({Key key}) : super(key: key);
@@ -7,6 +8,7 @@ class CountersScreen extends StatefulWidget {
 }
 
 class _CountersScreen extends State<CountersScreen> {
+  int zones = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,15 +16,109 @@ class _CountersScreen extends State<CountersScreen> {
         child: ListView(
           children: [
             _buildCard(false),
-            _buildCard(true),
+            //_buildCard(true),
+            _buildInitCard(),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print("TODO:// go to page: new counter");
+          print("TODO:// send new counters");
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.send),
+      ),
+    );
+  }
+
+  Widget _buildInitCard() {
+    return Opacity(
+      opacity: 0.8,
+      child: new Card (
+        child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column (
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "FIRST".toUpperCase(), style: TextStyle(fontSize: 16.0),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        print("TODO:// switch icon");
+                      },
+                      child: Icon(
+                        Icons.power,
+                        size: 45,
+                        color: Colors.green,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        print("TODO:// run time picker");
+                      },
+                      child: Text (
+                        "00:00",
+                        style: TextStyle(
+                          color: Colors.black12,
+                          fontSize: 50,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                CheckboxListTile(
+                  title: Text("REPEAT"),
+                  value: true,
+                  contentPadding: EdgeInsets.all(0),
+                  onChanged: (newValue) {
+                    setState(() {
+                      //checkedValue = newValue;
+                    });
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+                ),
+                // EXTRA
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // ZONE
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.85,
+                      child: TextField(
+                        decoration: new InputDecoration(
+                            labelText: "ZONE 1".toUpperCase(),
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        onSubmitted: (int) {
+                          print("TODO:// add zone $int");
+                        },
+                      ),
+                    ),
+                    // REPEATS
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.85,
+                      child: TextField(
+                        decoration: new InputDecoration(
+                            labelText: "REPEATS".toUpperCase(),
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        onSubmitted: (int) {
+                          print("TODO:// get repeats $int");
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+        ),
       ),
     );
   }
@@ -53,7 +149,7 @@ class _CountersScreen extends State<CountersScreen> {
                       "20:00",
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 75,
+                        fontSize: 50,
                       ),
                     ),
                   ],
@@ -73,7 +169,7 @@ class _CountersScreen extends State<CountersScreen> {
                                   children: [
                                     Text("1", style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 25,
+                                        fontSize: 20,
                                      ),
                                     ),
                                     Text("ZONE", style: TextStyle(
@@ -87,7 +183,7 @@ class _CountersScreen extends State<CountersScreen> {
                                   children: [
                                     Text("100", style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 25,
+                                        fontSize: 20,
                                       ),
                                     ),
                                     Text("REMAINING LOOPS", style: TextStyle(
