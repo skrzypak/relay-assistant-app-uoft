@@ -29,7 +29,7 @@ class _CountersScreen extends State<CountersScreen> {
 
   Widget _buildCard(bool countdown) {
     return new Card (
-      child: GestureDetector(
+      child: InkWell(
         onLongPress: () => print("TODO:// delete confirmation"),
         child: Padding(
             padding: const EdgeInsets.all(8.0),

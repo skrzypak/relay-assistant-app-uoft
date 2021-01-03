@@ -1,5 +1,6 @@
 import 'package:app/screens/controller.dart';
 import 'package:app/screens/counters.dart';
+import 'package:app/screens/settings.dart';
 import 'package:app/screens/timetable.dart';
 import 'package:flutter/material.dart';
 
@@ -47,7 +48,7 @@ class _HomePageState extends State<HomePage> {
               ControllerScreen(),
               CountersScreen(),
               TimetableScreen(),
-              //SettingsScreen(),
+              SettingsScreen(),
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(
@@ -68,6 +69,10 @@ class _HomePageState extends State<HomePage> {
               BottomNavigationBarItem(
                 icon: Icon(Icons.schedule),
                 label: 'Timetable',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: 'Settings',
               ),
             ],
             type: BottomNavigationBarType.fixed,

@@ -69,32 +69,32 @@ class _ControllerScreen extends State<ControllerScreen> {
 
 
   Widget _buildButton(String name, int index, Function func) =>
-    new GestureDetector(
-      onTap: () => func(),
-      onDoubleTap: () => print("TODO:// Set counters"),
-      onLongPress: () => print("TODO:// Set timetable"),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              border: (() {
-                if(name == "ENABLE")
-                  return Border.all(width: 1.0, color: Colors.green);
-                else if(name == "DISABLE")
-                  return Border.all(width: 1.0, color: Colors.red);
-                else return Border.all(width: 1.0, color: Colors.black12);
-              }()),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: Offset(0, 0),
-                ),
-              ]
-          ),
+    Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Container(
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: (() {
+              if(name == "ENABLE")
+                return Border.all(width: 1.0, color: Colors.green);
+              else if(name == "DISABLE")
+                return Border.all(width: 1.0, color: Colors.red);
+              else return Border.all(width: 1.0, color: Colors.black12);
+            }()),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: Offset(0, 0),
+              ),
+            ]
+        ),
+        child: InkWell(
+          onTap: () => func(),
+          onDoubleTap: () => print("TODO:// Set counters"),
+          onLongPress: () => print("TODO:// Set timetable"),
+          borderRadius: BorderRadius.circular(90),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
