@@ -27,25 +27,7 @@ class _TimetableScreen extends State<TimetableScreen> {
     return Padding(
       padding: const EdgeInsets.only(top: 25),
       child: Container (
-        child: Align(
-          alignment: AlignmentDirectional.bottomEnd,
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: FloatingActionButton(
-              onPressed: () {
-                print("TODO://_TimetableScreen::FloatingActionButton");
-                _selectTime(context);
-              },
-              child: Text(
-                "+",
-                style: TextStyle(
-                  fontSize: 25,
-                ),
-              ),
-              backgroundColor: Colors.blue,
-            ),
-          ),
-        )
+        child: null
       ),
     );
   }

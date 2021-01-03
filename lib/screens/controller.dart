@@ -71,13 +71,21 @@ class _ControllerScreen extends State<ControllerScreen> {
   Widget _buildButton(String name, int index, Function func) =>
     new GestureDetector(
       onTap: () => func(),
+      onDoubleTap: () => print("TODO:// Set counters"),
+      onLongPress: () => print("TODO:// Set timetable"),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Container(
           decoration: BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
-              border: Border.all(width: 1.0, color: Colors.black26),
+              border: (() {
+                if(name == "ENABLE")
+                  return Border.all(width: 1.0, color: Colors.green);
+                else if(name == "DISABLE")
+                  return Border.all(width: 1.0, color: Colors.red);
+                else return Border.all(width: 1.0, color: Colors.black12);
+              }()),
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.1),

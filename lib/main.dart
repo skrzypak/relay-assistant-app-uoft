@@ -1,6 +1,5 @@
 import 'package:app/screens/controller.dart';
-import 'package:app/screens/countdown.dart';
-import 'package:app/screens/repeat.dart';
+import 'package:app/screens/counters.dart';
 import 'package:app/screens/timetable.dart';
 import 'package:flutter/material.dart';
 
@@ -28,24 +27,33 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
-  final List<Widget> _children = [
-    ControllerScreen(),
-    CountdownScreen(),
-    RepeatScreen(),
-    TimetableScreen(),
-  ];
+  int _currentPageIndex = 0;
+  PageController _myPage = PageController(initialPage: 0);
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
       child: SafeArea(
         child: Scaffold(
-          body: _children[_currentIndex],
-          bottomNavigationBar: BottomNavigationBar(
-            onTap: (int idx) {
+          body: PageView (
+            controller: _myPage,
+            onPageChanged: (int) {
+              print('Page changes to index $int');
               setState(() {
-                _currentIndex = idx;
+                _currentPageIndex = int;
+              });
+            },
+            children: [
+              ControllerScreen(),
+              CountersScreen(),
+              TimetableScreen(),
+              //SettingsScreen(),
+            ],
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            onTap: (int) {
+              setState(() {
+                _myPage.jumpToPage(int);
               });
             },
             items: [
@@ -55,11 +63,7 @@ class _HomePageState extends State<HomePage> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.av_timer),
-                label: 'Countdown',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.repeat),
-                label: 'Repeat',
+                label: 'Counters',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.schedule),
@@ -67,7 +71,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
             type: BottomNavigationBarType.fixed,
-            currentIndex: _currentIndex,
+            currentIndex: _currentPageIndex,
           ),
         ),
       ),
