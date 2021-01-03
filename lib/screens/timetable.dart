@@ -1,4 +1,3 @@
-import 'package:app/screens/controller.dart';
 import 'package:flutter/material.dart';
 
 class TimetableScreen extends StatefulWidget {
@@ -16,6 +15,14 @@ class _TimetableScreen extends State<TimetableScreen> {
         child: ListView(
           children: [
             _buildInitCard(),
+            MaterialButton(
+              onPressed: () {
+                print("TODO:// send all new timetables");
+              },
+              child: Text(
+                "SEND ALL UPDATES TO ESP32",
+              ),
+            ),
             _buildCard("usb"),
           ],
         ),
@@ -186,21 +193,6 @@ class _TimetableScreen extends State<TimetableScreen> {
                 ),
               ),
               _buildDayOfWeekContent("monday"),
-              SizedBox(
-                width: 35,
-                height: 35,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Icon(
-                    Icons.add,
-                    size: 25.0,
-                    color: Colors.blue,
-                  ),
-                  onTap: () {
-                    print("TODO:// add new timetable item");
-                  },
-                ),
-              ),
             ],
           )
       ),
