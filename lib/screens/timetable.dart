@@ -8,6 +8,7 @@ class TimetableScreen extends StatefulWidget {
 }
 
 class _TimetableScreen extends State<TimetableScreen> {
+  bool updateMode = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
