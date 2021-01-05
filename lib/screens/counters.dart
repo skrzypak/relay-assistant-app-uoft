@@ -25,6 +25,11 @@ abstract class Mode {
 
   bool getState() => this._state;
   int getTime() => this._time;
+  String getTimeString() {
+    String res = "";
+    res = _time.toString();
+    return res;
+  }
   bool getRunning() => this._running;
   void setState(bool state) => this._state = state;
   void setTime(int time) => this._time = time;
@@ -101,43 +106,33 @@ class _CountersScreen extends State<CountersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    this._socketData[0].setCountdown(false, 1000, true);
-    this._socketData[1].setRepeat(false, 1000, true, 1, [10, 20, 30], 3);
-    this._socketData[3].setCountdown(false, 1000, true);
+    setState(() => this._socketData[0].setCountdown(true, 100, true));
+    setState(() => this._socketData[1].setRepeat(false, 1000, true, 1, [10, 20, 30], 3));
+    setState(() => this._socketData[3].setCountdown(false, 1000, true));
     return Scaffold(
       body: Container (
-        child: ListView(
+        child: Column(
           children: [
-            (() {
-              int _idx = 0;
-              Mode mode = this._socketData[_idx].getMode();
-              if(mode == null)
-                return _buildCardInitSocket(_idx);
-              else return _buildCardReadySockets(_idx);
-            }()),
-            (() {
-              int _idx = 1;
-              Mode mode = this._socketData[_idx].getMode();
-              if(mode == null)
-                return _buildCardInitSocket(_idx);
-              else return _buildCardReadySockets(_idx);
-            }()),
-            (() {
-              int _idx = 2;
-              Mode mode = this._socketData[_idx].getMode();
-              if(mode == null)
-                return _buildCardInitSocket(_idx);
-              else return _buildCardReadySockets(_idx);
-            }()),
-            (() {
-              int _idx = 3;
-              Mode mode = this._socketData[_idx].getMode();
-              if(mode == null)
-                return _buildCardInitSocket(_idx);
-              else return _buildCardReadySockets(_idx);
-            }()),
+            Expanded(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: ListView.builder(
+                  itemCount: this._socketData.length,
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    Mode mode = this._socketData[index].getMode();
+                    if(mode == null)
+                      return _buildCardInitSocket(index);
+                    else return _buildCardReadySockets(index);
+                  },
+                ),
+              ),
+            ),
             MaterialButton(
               onPressed: () {
+                setState(() => this._socketData[0].removeMode());
                 print("TODO:// send all new counters");
               },
               child: Text(
@@ -145,7 +140,7 @@ class _CountersScreen extends State<CountersScreen> {
               ),
             ),
           ],
-        ),
+        )
       ),
     );
   }
@@ -168,14 +163,33 @@ class _CountersScreen extends State<CountersScreen> {
               children: [
                 Center(
                   child: Icon(
-                    Icons.power,
+                    ((){
+                      Mode m = this._socketData[index].getMode();
+                      if(m == null) {
+                        return Icons.power;
+                      } else {
+                        return m.getState() ? Icons.power : Icons.power_off;
+                      }
+                    }()),
                     size: 45,
-                    color: Colors.green,
+                    color: ((){
+                      Mode m = this._socketData[index].getMode();
+                      if(m == null) {
+                        return Colors.black;
+                      } else {
+                        return m.getState() ? Colors.green : Colors.red;
+                      }
+                    }()),
                   ),
                 ),
                 Center(
                   child: Text(
-                    "20:00",
+                    ((){
+                      Mode m = this._socketData[index].getMode();
+                      if(m == null) {
+                        return "00:00";
+                      } else return m.getTimeString();
+                    }()),
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 50,
@@ -268,7 +282,10 @@ class _CountersScreen extends State<CountersScreen> {
   Widget _buildCardReadySockets(int index) {
     return Card(
         child: InkWell(
-      onLongPress: () => print("TODO:// delete confirmation"),
+      onLongPress: () {
+        print("TODO:// delete confirmation, send request to esp32");
+        setState(() => this._socketData[index].removeMode());
+      },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
