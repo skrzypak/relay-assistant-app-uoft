@@ -1,159 +1,84 @@
+import 'package:app/models/esp_data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:app/models/socket_state_model.dart';
+import '../models/socket_state_model.dart';
+import '../models/modes/mode_model.dart';
+import '../models/modes/repeat_model.dart';
+import '../blocs/esp_data_bloc.dart';
 
-class CountersScreen extends StatefulWidget {
-  CountersScreen({Key key}) : super(key: key);
-  @override
-  _CountersScreen createState() => _CountersScreen();
-}
-
-/// Abstract class define sockets mode
-abstract class Mode {
-  bool _state;
-  int _time;
-  bool _running;
-
-  /// Class constructor
-  /// @param _state define whether socket on/off
-  /// @param _time contains time to end in seconds
-  /// @param _running define whether mode is on/off
-  Mode(bool state, int time, bool running) {
-    this._state = state;
-    this._time = time;
-    this._running = running;
-  }
-
-  bool getState() => this._state;
-  int getTime() => this._time;
-  String getTimeString() {
-    String res = "";
-    res = _time.toString();
-    return res;
-  }
-  bool getRunning() => this._running;
-  void setState(bool state) => this._state = state;
-  void setTime(int time) => this._time = time;
-  void setRunning(bool running) => this._running = running;
-}
-
-class Countdown extends Mode {
-
-  /// Class constructor
-  /// @param state define whether socket on/off
-  /// @param time contains time to end in seconds
-  /// @param running define whether mode is on/off
-  Countdown(bool state, int time, bool running) : super(state, time, running);
-}
-
-class Repeat extends Mode {
-
-  int _zone;
-  List<int> _zones;
-  int _repeats;
-  /// Class constructor
-  /// @param state define whether socket on/off
-  /// @param time contains time to end in seconds
-  /// @param running define whether mode is on/off
-  /// @param zone current zone
-  /// @param zones list of zones (each zone contains seconds)
-  /// @param repeats number repeats to end
-  Repeat(bool state, int time, bool running, int zone,  List<int> zones, int repeats) : super(state, time, running) {
-    this._zone = zone;
-    this._zones = zones;
-    this._repeats = repeats;
-  }
-
-  int getCurrentZone() => this._zone;
-  List<int> getZones() => this._zones;
-  int getRepeats() => this._repeats;
-  void setCurrentZone(int zone) => this._zone = zone;
-  void setZones(List<int> zones) => this._zones = zones;
-  void setRepeats(int repeats) => this._repeats = repeats;
-}
-
-/// Class contain sockets data
-class SocketData {
-  int _index;
-  String _name;
-  Mode _mode;
-
-  /// Class constructor
-  /// @param _index socket index
-  /// @param _name socket name
-  SocketData(int _index, String _name) {
-    this._index = _index;
-    this._name = _name;
-    this._mode = null;
-  }
-
-  void setRepeat(bool state, int time, bool running, int zone,  List<int> zones, int repeats)
-    => this._mode = new Repeat(state, time, running, zone, zones, repeats);
-  void setCountdown(bool state, int time, bool running)
-    => this._mode = new Countdown(state, time, running);
-  void removeMode() => this._mode = null;
-  Mode getMode() => this._mode;
-  int getIndex() => this._index;
-  String getName() => this._name;
-}
-
-class _CountersScreen extends State<CountersScreen> {
-  List<SocketData> _socketData = [
-    SocketData(0, "USB"),
-    SocketData(1, "FIRST"),
-    SocketData(2, "SECOND"),
-    SocketData(3, "THIRD"),
-  ];
+class CountersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    setState(() => this._socketData[0].setCountdown(true, 100, true));
-    setState(() => this._socketData[1].setRepeat(false, 1000, true, 1, [10, 20, 30], 3));
-    setState(() => this._socketData[3].setCountdown(false, 1000, true));
     return Scaffold(
-      body: Container (
-        child: Column(
-          children: [
-            Expanded(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: ListView.builder(
-                  itemCount: this._socketData.length,
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    Mode mode = this._socketData[index].getMode();
-                    if(mode == null)
-                      return _buildCardInitSocket(index);
-                    else return _buildCardReadySockets(index);
-                  },
-                ),
+      body: Container(
+          child: Column(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height,
+                  child: StreamBuilder(
+                    stream: bloc.countersFetcher,
+                    builder: (context, AsyncSnapshot<EspDataModel> snapshot) {
+                      if (snapshot.hasData) {
+                        return _buildList(snapshot);
+                      } else if (snapshot.hasError) {
+                        return Text(snapshot.error.toString());
+                      } else {
+                        bloc.fetchCounters();
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
               ),
             ),
             MaterialButton(
               onPressed: () {
-                setState(() => this._socketData[0].removeMode());
+                bloc.fetchEspData();
                 print("TODO:// send all new counters");
               },
               child: Text(
                 "SEND ALL UPDATES TO ESP32",
               ),
             ),
-          ],
-        )
+            ],
+          )
       ),
     );
   }
 
-  Widget _buildCardTop(int index) {
+  Widget _buildList(AsyncSnapshot<EspDataModel> snapshot) {
+    return ListView.builder(
+      itemCount: snapshot.data!.socketsDataList.length,
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+          ModeModel? mode = snapshot.data!.getSocketData(index).getMode();
+        if (mode == null)
+          return _buildCardInitSocket(snapshot.data!.getSocketData(index));
+        else
+          return _buildCardReadySockets(snapshot.data!.getSocketData(index));
+      },
+    );
+  }
+
+  Widget _buildCardTop(SocketStateModel data) {
     return Container(
         child: Column(
-      children: [
-        Align(
-          alignment: Alignment.topLeft,
-          child: Text(
-            this._socketData[index].getName().toUpperCase(),
-            style: TextStyle(fontSize: 16.0),
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                data.name.toUpperCase(),
+                style: TextStyle(fontSize: 16.0),
           ),
         ),
         Table(
@@ -164,8 +89,8 @@ class _CountersScreen extends State<CountersScreen> {
                 Center(
                   child: Icon(
                     ((){
-                      Mode m = this._socketData[index].getMode();
-                      if(m == null) {
+                      ModeModel? m = data.getMode();
+                      if (m == null) {
                         return Icons.power;
                       } else {
                         return m.getState() ? Icons.power : Icons.power_off;
@@ -173,8 +98,8 @@ class _CountersScreen extends State<CountersScreen> {
                     }()),
                     size: 45,
                     color: ((){
-                      Mode m = this._socketData[index].getMode();
-                      if(m == null) {
+                      ModeModel? m = data.getMode();
+                      if (m == null) {
                         return Colors.black;
                       } else {
                         return m.getState() ? Colors.green : Colors.red;
@@ -185,10 +110,11 @@ class _CountersScreen extends State<CountersScreen> {
                 Center(
                   child: Text(
                     ((){
-                      Mode m = this._socketData[index].getMode();
-                      if(m == null) {
+                      ModeModel? m = data.getMode();
+                      if (m == null) {
                         return "00:00";
-                      } else return m.getTimeString();
+                      } else
+                        return m.getTimeString();
                     }()),
                     style: TextStyle(
                       color: Colors.black,
@@ -204,7 +130,7 @@ class _CountersScreen extends State<CountersScreen> {
     ));
   }
 
-  Widget _buildCardBottomStatistic(int index) {
+  Widget _buildCardBottomStatistic(SocketStateModel data) {
     return Column(
       children: [
         Padding(
@@ -279,28 +205,28 @@ class _CountersScreen extends State<CountersScreen> {
     );
   }
 
-  Widget _buildCardReadySockets(int index) {
+  Widget _buildCardReadySockets(SocketStateModel data) {
     return Card(
         child: InkWell(
       onLongPress: () {
         print("TODO:// delete confirmation, send request to esp32");
-        setState(() => this._socketData[index].removeMode());
+        //setState(() => this._socketStateList[index].removeMode());
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            _buildCardTop(index),
+            _buildCardTop(data),
             // REPEAT TABLE DATA
-            this._socketData[index].getMode() is Repeat
-                ? _buildCardBottomStatistic(index) : Text(""),
+            data.getMode() is RepeatModel
+                ? _buildCardBottomStatistic(data) : Text(""),
           ],
         ),
       ),
     ));
   }
 
-  Widget _buildCardInitSocket(int index) {
+  Widget _buildCardInitSocket(SocketStateModel data) {
     return Opacity(
       opacity: 0.5,
       child: new Card(
@@ -308,9 +234,9 @@ class _CountersScreen extends State<CountersScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              _buildCardTop(index),
+              _buildCardTop(data),
               // EXTRA
-              _buildCardBottomForm(index),
+              _buildCardBottomForm(data),
             ],
           ),
         ),
@@ -318,7 +244,7 @@ class _CountersScreen extends State<CountersScreen> {
     );
   }
 
-  Widget _buildCardBottomForm(int index) {
+  Widget _buildCardBottomForm(SocketStateModel data) {
     return Container(
       child: Column(
         children: [
@@ -327,7 +253,8 @@ class _CountersScreen extends State<CountersScreen> {
             children: [
               // REPEATS
               SizedBox(
-                width: MediaQuery.of(context).size.width * 0.85,
+                //width: MediaQuery.of(context).size.width * 0.85,
+                width: 250,
                 child: TextField(
                   decoration: new InputDecoration(
                     hintText: "REPEATS".toUpperCase(),

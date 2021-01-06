@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TimetableScreen extends StatefulWidget {
-  TimetableScreen({Key key}) : super(key: key);
+  TimetableScreen({Key? key}) : super(key: key);
 
   @override
   _TimetableScreen createState() => _TimetableScreen();
@@ -59,7 +59,7 @@ class _TimetableScreen extends State<TimetableScreen> {
                   iconSize: 0,
                   elevation: 0,
                   style: TextStyle(color: Colors.black, fontSize: 16),
-                  onChanged: (String newValue) {
+                  onChanged: (String? newValue) {
                     setState(() {
                       //dropdownValue = newValue;
                     });
@@ -88,7 +88,7 @@ class _TimetableScreen extends State<TimetableScreen> {
                   iconSize: 0,
                   elevation: 0,
                   style: TextStyle(color: Colors.black, fontSize: 16),
-                  onChanged: (String newValue) {
+                  onChanged: (String? newValue) {
                     setState(() {
                       //dropdownValue = newValue;
                     });

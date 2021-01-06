@@ -3,9 +3,16 @@ import 'package:app/screens/counters.dart';
 import 'package:app/screens/settings.dart';
 import 'package:app/screens/timetable.dart';
 import 'package:flutter/material.dart';
+import 'package:app/blocs/esp_data_bloc.dart';
 
 void main() {
-  runApp(MyApp());
+  try {
+    bloc.fetchEspData();
+  } catch(e) {
+    print(e);
+  } finally {
+    runApp(MyApp());
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -22,7 +29,7 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
   @override
   _HomePageState createState() => _HomePageState();
 }
