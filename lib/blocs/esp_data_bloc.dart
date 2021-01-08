@@ -1,7 +1,7 @@
+import 'package:app/models/init_counter_data_ui_.dart';
 import 'package:rxdart/rxdart.dart';
 import '../models/esp_data_model.dart';
 import '../resources/repository.dart';
-
 
 class EspDataBloc {
   final _repository = Repository();
@@ -15,22 +15,31 @@ class EspDataBloc {
   Stream<EspDataModel> get countersFetcher => this._countersFetcher.stream;
   Stream<EspDataModel> get timetableFetcher => this._timetableFetcher.stream;
 
+  generateCounters() async {
+    print("Generate counters...");
+    _espDataModel = await this._repository.fetchEspData();
+    this._countersFetcher.sink.add(this._espDataModel!);
+  }
+
   fetchEspData() async {
     print("fetchEspData() async");
-    // TODO on connection lose
-    if(_espDataModel == null) {
-      _espDataModel = await this._repository.fetchEspData();
-    }
+    print("EspData generate...");
+    _espDataModel = await this._repository.fetchEspData();
+    this._controllerFetcher.sink.add(this._espDataModel!);
   }
 
   fetchController() async {
-    print(" fetchController()");
+    print("fetchController()");
     this._controllerFetcher.sink.add(this._espDataModel!);
   }
 
   fetchCounters() async {
     print("fetchCounters() async");
     this._countersFetcher.sink.add(this._espDataModel!);
+  }
+
+  fetchInitCounter(InitCounterDataUi data) async {
+    print("TODO:// send new counter");
   }
 
   fechTimetable() async {
@@ -95,6 +104,7 @@ class EspDataBloc {
     this._countersFetcher.close();
     this._timetableFetcher.close();
   }
+
 }
 
 final bloc = EspDataBloc();

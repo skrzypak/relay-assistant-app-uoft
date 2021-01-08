@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../blocs/esp_data_bloc.dart';
 
-class ControllerScreen extends StatelessWidget {
+class ControllerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(

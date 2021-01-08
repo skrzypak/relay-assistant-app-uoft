@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class TimetableScreen extends StatefulWidget {
-  TimetableScreen({Key? key}) : super(key: key);
+class TimetablePage extends StatefulWidget {
+  TimetablePage({Key? key}) : super(key: key);
 
   @override
-  _TimetableScreen createState() => _TimetableScreen();
+  _TimetablePage createState() => _TimetablePage();
 }
 
-class _TimetableScreen extends State<TimetableScreen> {
+class _TimetablePage extends State<TimetablePage> {
   bool updateMode = false;
   @override
   Widget build(BuildContext context) {

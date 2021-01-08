@@ -1,18 +1,13 @@
-import 'package:app/screens/controller.dart';
-import 'package:app/screens/counters.dart';
-import 'package:app/screens/settings.dart';
-import 'package:app/screens/timetable.dart';
+import 'package:app/pages/controller.dart';
+import 'package:app/pages/counters.dart';
+import 'package:app/pages/settings.dart';
+import 'package:app/pages/timetable.dart';
 import 'package:flutter/material.dart';
 import 'package:app/blocs/esp_data_bloc.dart';
 
-void main() {
-  try {
-    bloc.fetchEspData();
-  } catch(e) {
-    print(e);
-  } finally {
-    runApp(MyApp());
-  }
+void main() async {
+  await bloc.fetchEspData();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -52,10 +47,10 @@ class _HomePageState extends State<HomePage> {
               });
             },
             children: [
-              ControllerScreen(),
-              CountersScreen(),
-              TimetableScreen(),
-              SettingsScreen(),
+              ControllerPage(),
+              CountersPage(),
+              TimetablePage(),
+              SettingsPage(),
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(

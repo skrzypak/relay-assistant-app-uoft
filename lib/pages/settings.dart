@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class SettingsScreen extends StatefulWidget {
-  SettingsScreen({Key? key}) : super(key: key);
+class SettingsPage extends StatefulWidget {
+  SettingsPage({Key? key}) : super(key: key);
   @override
-  _SettingsScreen createState() => _SettingsScreen();
+  _SettingsPage createState() => _SettingsPage();
 }
 
-class _SettingsScreen extends State<SettingsScreen> {
+class _SettingsPage extends State<SettingsPage> {
   String _currentIp = "192.168.1.23";
   String _value = "";
   @override
