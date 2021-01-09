@@ -1,13 +1,15 @@
+import 'package:app/models/timetable_model.dart';
+
 import './modes/mode_model.dart';
 import './modes/countdown_model.dart';
 import './modes/repeat_model.dart';
-
 /// Class contain sockets data
 class SocketStateModel {
   late int _index;
   late String _name;
   late bool _state;
   ModeModel? _mode;
+  Map<int, List<Timetable>> _dayOfWeekTimetable = new Map();
 
   /// Class constructor
   /// @param index socket index
@@ -40,4 +42,22 @@ class SocketStateModel {
   get name => this._name;
 
   get state => this._state;
+
+  get dayOfWeekTimetable => this._dayOfWeekTimetable;
+
+  void addTimetable(int day, String time, bool state) {
+    if(this._dayOfWeekTimetable.containsKey(day) == false) {
+      this._dayOfWeekTimetable[day] = [];
+    }
+    int idx = this._dayOfWeekTimetable[day]!.length;
+    this._dayOfWeekTimetable[day]!.add(Timetable(idx, _index, day, time, state, true));
+  }
+
+  void initTimetable(int day, String time, bool state) {
+    if(this._dayOfWeekTimetable.containsKey(day) == false) {
+      this._dayOfWeekTimetable[day] = [];
+    }
+    int idx = this._dayOfWeekTimetable[day]!.length;
+    this._dayOfWeekTimetable[day]!.add(Timetable(idx, _index, day, time, state, false));
+  }
 }

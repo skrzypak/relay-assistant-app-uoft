@@ -1,3 +1,5 @@
+import 'package:app/models/timetable_model.dart';
+
 import 'socket_state_model.dart';
 
 /// Class define global data container
@@ -27,6 +29,7 @@ class EspDataModel {
     }
   }
 
+
   void offSocket(int num)  => this._socketsDataList[num].setState(false);
 
   void onSocket(int num) => this._socketsDataList[num].setState(true);
@@ -41,4 +44,16 @@ class EspDataModel {
       this._socketsDataList[i].setState(true);
     }
   }
+
+  void addRepeat(int index, bool state, int time, bool running, int zone,  List<int> zones, int repeats)
+  => this._socketsDataList[index].setRepeat(state, time, running, zone, zones, repeats);
+
+  void addCountdown(int index, bool state, int time, bool running)
+  => this._socketsDataList[index].setCountdown(state, time, running);
+
+  void addTimetable(int socket, int day, String time, bool state) {
+    this._socketsDataList[socket].addTimetable(day, time, state);
+  }
+
+  List<Timetable> getDayOfWeekTimetable(int socket, int day) => this._socketsDataList[socket].dayOfWeekTimetable[day];
 }
