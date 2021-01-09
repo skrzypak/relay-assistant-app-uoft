@@ -1,24 +1,19 @@
 import 'package:app/models/esp_data_model.dart';
+import 'package:app/models/timetable_form_model.dart';
+import 'package:app/pages/counters.dart';
 import 'package:flutter/material.dart';
+
 import '../blocs/esp_data_bloc.dart';
 import '../models/timetable_model.dart';
 
-class TimetablePage extends StatefulWidget {
-  TimetablePage({Key? key}) : super(key: key);
-
-  @override
-  _TimetablePage createState() => _TimetablePage();
-}
-
-class _TimetablePage extends State<TimetablePage> {
-  bool updateMode = false;
+class TimetablePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         child: ListView(
           children: [
-            _buildInitCard(),
+            InitTimetableCard(),
             MaterialButton(
               onPressed: () {
                 print("TODO:// send all new timetables");
@@ -153,17 +148,17 @@ class _TimetablePage extends State<TimetablePage> {
                         fontSize: 25,
                       ),
                     ),
-                    t.state ?
-                    Icon(
-                      Icons.power,
-                      size: 25,
-                      color: Colors.green,
-                    ) :
-                    Icon(
-                      Icons.power_off,
-                      size: 25,
-                      color: Colors.red,
-                    ),
+                    t.state!
+                        ? Icon(
+                            Icons.power,
+                            size: 25,
+                            color: Colors.green,
+                          )
+                        : Icon(
+                            Icons.power_off,
+                            size: 25,
+                            color: Colors.red,
+                          ),
                   ],
                 ),
               ),
@@ -198,7 +193,101 @@ class _TimetablePage extends State<TimetablePage> {
     );
   }
 
-  Widget  _buildInitCard() {
+  String getDayNameFromInt(int day) {
+    switch(day) {
+      case 0:
+        return "SUN";
+      case 1:
+        return "MON";
+      case 2:
+        return "TUE";
+      case 3:
+        return "WED";
+      case 4:
+        return "THU";
+      case 5:
+        return "FRI";
+    }
+    return "SAT";
+  }
+}
+
+class InitTimetableCard extends StatefulWidget {
+  InitTimetableCard({Key? key}) : super(key: key);
+
+  @override
+  _InitTimetableCard createState() => _InitTimetableCard();
+}
+
+class Item {
+  const Item(this._index, this._name);
+  final String _name;
+  final int _index;
+  String get name => this._name;
+  int get index => this._index;
+
+}
+
+class _InitTimetableCard extends State<InitTimetableCard> {
+
+  TimetableForm data = TimetableForm(0, 0, 0, "00:00", true);
+  List<Item> names = [Item(0, 'USB'), Item(1, 'FIRST'), Item(2, 'SECOND'), Item(3, 'THIRD')];
+  List<Item> dayNames = [
+    Item(0, 'SUNDAY'),
+    Item(1, 'MONDAY'),
+    Item(2, 'TUESDAY'),
+    Item(3, 'WEDNESDAY'),
+    Item(4, 'THURSDAY'),
+    Item(5, 'FRIDAY'),
+    Item(6, 'SATURDAY'),
+  ];
+
+  void setEditMode(TimetableForm data) {
+    setState(() {
+      this.data = data;
+    });
+  }
+
+  void setSocket(int socket) {
+    setState(() {
+      this.data.setSocket(socket);
+    });
+  }
+
+  void setDay(int day) {
+    setState(() {
+      this.data.setDay(day);
+    });
+  }
+
+  void setTime(String time) {
+    setState(() {
+      this.data.setTime(time);
+    });
+  }
+
+  void toggleState() {
+    setState(() {
+      this.data.toggleState();
+    });
+  }
+
+  Future<Null> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(context: context,initialTime: TimeOfDay(hour: 00, minute: 00));
+    if (picked != null) {
+      var hour = picked.hour;
+      var min = picked.minute;
+      String val = "";
+      if (hour < 10) val += "0";
+      val += "$hour:";
+      if (min < 10) val += "0";
+      val += "$min";
+      setTime(val);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return new Card(
         child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -215,21 +304,19 @@ class _TimetablePage extends State<TimetablePage> {
                         )),
                       ),
                     ),
-                    DropdownButton<String>(
-                      value: 'FIRST'.toUpperCase(),
+                    DropdownButton<Item>(
+                      value: this.names[this.data.socket!],
                       iconSize: 0,
                       elevation: 0,
                       style: TextStyle(color: Colors.black, fontSize: 16),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          //dropdownValue = newValue;
-                        });
+                      onChanged: (Item? value) {
+                        if(value != null)
+                          this.setSocket(value.index);
                       },
-                      items: <String>['USB', 'FIRST', 'SECOND', 'THIRD']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value.toUpperCase(),
-                          child: Text(value.toUpperCase()),
+                      items: this.names.map<DropdownMenuItem<Item>>((Item value) {
+                        return DropdownMenuItem<Item>(
+                          value: value,
+                          child: Text(value.name.toUpperCase()),
                         );
                       }).toList(),
                     )
@@ -244,22 +331,19 @@ class _TimetablePage extends State<TimetablePage> {
                         )),
                       ),
                     ),
-                    DropdownButton<String>(
-                      value: 'MONDAY'.toUpperCase(),
+                    DropdownButton<Item>(
+                      value: this.dayNames[this.data.day!],
                       iconSize: 0,
                       elevation: 0,
                       style: TextStyle(color: Colors.black, fontSize: 16),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          //dropdownValue = newValue;
-                        });
+                      onChanged: (Item? value) {
+                        if(value != null)
+                          this.setDay(value.index);
                       },
-                      items: <String>['SUNDAY', 'MONDAY', 'TUESDAY',
-                        'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value.toUpperCase(),
-                          child: Text(value.toUpperCase()),
+                      items: this.dayNames.map<DropdownMenuItem<Item>>((Item value) {
+                        return DropdownMenuItem<Item>(
+                          value: value,
+                          child: Text(value.name.toUpperCase()),
                         );
                       }).toList(),
                     )
@@ -276,13 +360,13 @@ class _TimetablePage extends State<TimetablePage> {
                     ),
                     InkWell(
                       onTap: () {
-                        print("TODO:// timer");
+                        _selectTime(context);
                       },
                       child: SizedBox(
                         height: 48,
                         child: Align(
                           alignment: Alignment.centerLeft,
-                          child: Text("00:00", style: TextStyle(
+                          child: Text(data.time.toString(), style: TextStyle(
                             fontSize: 16,
                           )),
                         ),
@@ -301,16 +385,16 @@ class _TimetablePage extends State<TimetablePage> {
                     ),
                     InkWell(
                       onTap: () {
-                        print("TODO:// change state icon");
+                        this.toggleState();
                       },
                       child: SizedBox(
                         height: 48,
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Icon(
-                            Icons.power,
+                            this.data.state! ? Icons.power : Icons.power_off,
                             size: 45,
-                            color: Colors.green,
+                            color: this.data.state! ? Colors.green : Colors.red,
                           ),
                         ),
                       ),
@@ -320,13 +404,20 @@ class _TimetablePage extends State<TimetablePage> {
                     MaterialButton(
                       child: Text("REST"),
                       onPressed: () {
-                        print("TODO:// reset");
+                        setState(() {
+                          this.data = TimetableForm(0, 0, 0, "00:00", true);
+                        });
                       },
                     ),
                     MaterialButton(
                       child: Text("ADD"),
                       onPressed: () {
                         print("TODO:// add");
+                        print(data.index);
+                        print(data.socket);
+                        print(data.time);
+                        print(data.day);
+                        print(data.state);
                       },
                     ),
                   ]),
@@ -337,16 +428,5 @@ class _TimetablePage extends State<TimetablePage> {
         )
     );
   }
-
-  String getDayNameFromInt(int day) {
-    switch(day) {
-      case 0: return "SUN";
-      case 1: return "MON";
-      case 2: return "TUE";
-      case 3: return "WED";
-      case 4: return "THU";
-      case 5: return "FRI";
-    }
-    return "SAT";
-  }
 }
+

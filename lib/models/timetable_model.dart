@@ -1,3 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 class Timetable {
   int? _index;
   int? _socket;
@@ -16,10 +19,22 @@ class Timetable {
   }
 
   get index => this._index;
-  get socket => this._socket;
-  get day => this._day;
-  get time => this._time;
-  get state => this._state;
+  int? get socket => this._socket;
+  int? get day => this._day;
+  String? get time => this._time;
+  bool? get state => this._state;
   get initialize => this._initialize;
+
+  @protected
+  set socket(int? socket) => this._socket = socket;
+
+  @protected
+  set day(int? day) => this._day = day;
+
+  @protected
+  set time(String? time) => this._time = time;
+
+  @protected
+  set state(bool? val) => this._state = val;
 
 }
