@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/models/init_counter_data_ui_.dart';
 import 'package:rxdart/rxdart.dart';
 import '../models/esp_data_model.dart';
@@ -9,11 +11,14 @@ class EspDataBloc {
   final _countersFetcher = PublishSubject<EspDataModel>();
   final _timetableFetcher = PublishSubject<EspDataModel>();
   EspDataModel? _espDataModel;
+  Socket? _socket;
 
   // TODO separates streams
   Stream<EspDataModel> get controllerFetcher => this._controllerFetcher.stream;
   Stream<EspDataModel> get countersFetcher => this._countersFetcher.stream;
   Stream<EspDataModel> get timetableFetcher => this._timetableFetcher.stream;
+
+  Socket? get socket => this._socket;
 
   generateCounters() async {
     print("Generate counters...");
@@ -21,11 +26,26 @@ class EspDataBloc {
     this._countersFetcher.sink.add(this._espDataModel!);
   }
 
-  fetchEspData() async {
+  Future<bool> connectToEsp() async {
+    if(this.socket == null) {
+      this._socket = await Socket.connect('192.168.1.20', 80);
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> fetchEspData() async {
     print("fetchEspData() async");
-    print("EspData generate...");
-    _espDataModel = await this._repository.fetchEspData();
-    this._controllerFetcher.sink.add(this._espDataModel!);
+    bool status = await connectToEsp();
+    if(status) {
+      print("EspData generate...");
+      _espDataModel = await this._repository.fetchEspData();
+      this._controllerFetcher.sink.add(this._espDataModel!);
+      return true;
+    } else {
+      print("No connection");
+      return false;
+    }
   }
 
   fetchController() async {
@@ -39,7 +59,20 @@ class EspDataBloc {
   }
 
   fetchInitCounter(InitCounterDataUi data) async {
-    print("TODO:// send new counter");
+    bool success = false;
+
+    if(data.numOfValidZones == 0) {
+      success = await this._repository.fetchSetCountdown(data.toJson());
+    } else if(data.numOfValidZones > 1) {
+      success = await this._repository.fetchSetRepeat(data.toJson());
+    }
+
+    if(success) {
+      // TODO alert
+      this._controllerFetcher.sink.add(this._espDataModel!);
+    } else {
+      // TODO send err
+    }
   }
 
   fechTimetable() async {
@@ -52,7 +85,7 @@ class EspDataBloc {
     bool success = await this._repository.fetchSetOffSocket(num);
 
     if(success) {
-      this._espDataModel!.offSocket(num);
+      // TODO alert
       this._controllerFetcher.sink.add(this._espDataModel!);
     } else {
       // TODO send err
@@ -65,7 +98,7 @@ class EspDataBloc {
     bool success = await this._repository.fetchSetOnSocket(num);
 
     if(success) {
-      this._espDataModel!.onSocket(num);
+      // TODO alert
       this._controllerFetcher.sink.add(this._espDataModel!);
     } else {
       // TODO send err
@@ -77,7 +110,7 @@ class EspDataBloc {
     bool success = await this._repository.fetchSetOffAllSockets();
 
     if(success) {
-      this._espDataModel!.offAllSockets();
+      // TODO alert
       this._controllerFetcher.sink.add(this._espDataModel!);
     } else {
       // TODO send err
@@ -90,7 +123,7 @@ class EspDataBloc {
     bool success = await this._repository.fetchSetOnAllSockets();
 
     if(success) {
-      this._espDataModel!.onAllSockets();
+      // TODO alert
       this._controllerFetcher.sink.add(this._espDataModel!);
     } else {
       // TODO send err

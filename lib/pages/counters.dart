@@ -38,14 +38,6 @@ class CountersPage extends StatelessWidget {
               ),
             ),
           ),
-          // MaterialButton(
-          //   onPressed: () {
-          //     print("TODO:// send all new counters");
-          //   },
-          //   child: Text(
-          //     "SEND ALL UPDATES TO ESP32",
-          //   ),
-          // ),
         ],
       )),
     );
@@ -106,8 +98,6 @@ class _CardInitSocket extends State<CardInitSocket> {
                 padding: const EdgeInsets.all(8.0),
                 child: MaterialButton(
                   onPressed: () {
-                    var countdown = this._initCounterData!.getZone(0);
-                    print("TODO:// send to esp new countdown mode: $countdown");
                     bloc.fetchInitCounter(this._initCounterData!);
                   },
                   child: Text(
@@ -306,7 +296,7 @@ class _CardInitSocket extends State<CardInitSocket> {
           ),
           MaterialButton(
             onPressed: () {
-                print("TODO:// send to esp new repeats mode");
+                bloc.fetchInitCounter(this._initCounterData!);
             },
             child: Text(
               "SEND REQUEST TO ESP32",

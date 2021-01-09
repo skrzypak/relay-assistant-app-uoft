@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class InitCounterDataUi {
   int? _index;
   String? _name;
@@ -36,5 +38,47 @@ class InitCounterDataUi {
   void setRepeat(int val) => this._repeats = val;
 
   void removeZone(int index) => this._zonesLastExtra.removeAt(index);
+
+  Map<String, dynamic> _toCountdownJson(int second) =>
+      {
+        "0": {
+          "socket": _index,
+          "countdown": second,
+          "state": _state ? 1 : 0
+        }
+      };
+
+  Map<String, dynamic> _toRepeatJson(List<int> seconds) =>
+      {
+        "0": {
+          "socket": _index,
+          "zones": seconds,
+          "state": _state ? 1 : 0,
+          "repeats": _repeats > 0 ? _repeats : 1
+        }
+      };
+
+  String toJson() {
+    String val = "";
+    var json;
+    if(this._zonesLastExtra.length == 1) {
+      // Countdown
+      var item = this._zonesLastExtra.first;
+      int sec = item.hour * 3600 + item.minute * 60 + item.second;
+      json = _toCountdownJson(sec);
+    } else {
+      // Repeat
+      this._zonesLastExtra.removeLast();
+      List<int> seconds = [];
+      for(int i = 0; i < _zonesLastExtra.length; i++) {
+        var item = this._zonesLastExtra[i];
+        int sec = item.hour * 3600 + item.minute * 60 + item.second;
+        seconds.add(sec);
+      }
+      json = _toRepeatJson(seconds);
+    }
+    val = jsonEncode(json);
+    return val;
+  }
 
 }
