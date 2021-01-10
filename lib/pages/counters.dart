@@ -238,6 +238,7 @@ class _CardInitSocket extends State<CardInitSocket> {
                 itemCount: this._initCounterData!.numOfValidZones,
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   return InkWell(
                     onTap: () {

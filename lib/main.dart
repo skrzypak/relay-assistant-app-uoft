@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:app/blocs/esp_data_bloc.dart';
 
 void main() async {
-  await bloc.fetchEspData();
+  await bloc.connectToEsp();
   runApp(MyApp());
 }
 
@@ -38,20 +38,31 @@ class _HomePageState extends State<HomePage> {
       color: Colors.white,
       child: SafeArea(
         child: Scaffold(
-          body: PageView (
-            controller: _myPage,
-            onPageChanged: (int) {
-              print('Page changes to index $int');
-              setState(() {
-                _currentPageIndex = int;
-              });
-            },
-            children: [
-              ControllerPage(),
-              CountersPage(),
-              TimetablePage(),
-              SettingsPage(),
-            ],
+          body: StreamBuilder<Object>(
+            stream: bloc.channel,
+            builder: (context, AsyncSnapshot<Object?> snapshot) {
+              if(snapshot.hasData && !snapshot.hasError) {
+                var charCodes = snapshot.data as List<int>;
+                var stream = String.fromCharCodes(charCodes);
+                bloc.fetch(stream);
+                return PageView (
+                  controller: _myPage,
+                  onPageChanged: (int) {
+                    setState(() {
+                      _currentPageIndex = int;
+                    });
+                  },
+                  children: [
+                    ControllerPage(),
+                    CountersPage(),
+                    TimetablePage(),
+                    SettingsPage(),
+                  ],
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            }
           ),
           bottomNavigationBar: BottomNavigationBar(
             onTap: (int) {
