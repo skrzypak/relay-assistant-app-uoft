@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class SocketsStatesApiProvider {
 
-  Future<bool> fetchSetOffSocket(int num) async {
+  Future<void> fetchPostOffSocket(int num) async {
     final http.Response response = await http.put(
         'http://192.168.1.20:80/off',
         headers: {
@@ -13,12 +13,11 @@ class SocketsStatesApiProvider {
         },
         body: "socket=$num"
     );
-    if (response.statusCode == 200 && jsonDecode(response.body).toString() == "null")
-      return true;
-    return false;
+    if (response.statusCode != 200 || jsonDecode(response.body).toString() != "null")
+      Exception("Fetch error turn off socket");
   }
 
-  Future<bool> fetchSetOnSocket(int num) async {
+  Future<void> fetchPostOnSocket(int num) async {
     final http.Response response = await http.put(
         'http://192.168.1.20:80/on',
         headers: {
@@ -26,12 +25,11 @@ class SocketsStatesApiProvider {
         },
         body: "socket=$num"
     );
-    if (response.statusCode == 200 && jsonDecode(response.body).toString() == "null")
-      return true;
-    return false;
+    if (response.statusCode != 200 || jsonDecode(response.body).toString() != "null")
+      Exception("Fetch error turn on socket");
   }
 
-  Future<bool> fetchSetOffAllSockets() async {
+  Future<void> fetchPostOffAllSockets() async {
     final http.Response response = await http.put(
         'http://192.168.1.20:80/off',
         headers: {
@@ -39,12 +37,11 @@ class SocketsStatesApiProvider {
         },
         body: "socket=0&socket=1&socket=2&socket=3"
     );
-    if (response.statusCode == 200 && jsonDecode(response.body).toString() == "null")
-      return true;
-    return false;
+    if (response.statusCode != 200 || jsonDecode(response.body).toString() != "null")
+      Exception("Fetch error turn off all socket");
   }
 
-  Future<bool> fetchSetOnAllSockets() async {
+  Future<void> fetchPostOnAllSockets() async {
     final http.Response response = await http.put(
         'http://192.168.1.20:80/on',
         headers: {
@@ -52,8 +49,7 @@ class SocketsStatesApiProvider {
         },
         body: "socket=0&socket=1&socket=2&socket=3"
     );
-    if (response.statusCode == 200 && jsonDecode(response.body).toString() == "null")
-      return true;
-    return false;
+    if (response.statusCode != 200 || jsonDecode(response.body).toString() != "null")
+      Exception("Fetch error turn on all socket");
   }
 }

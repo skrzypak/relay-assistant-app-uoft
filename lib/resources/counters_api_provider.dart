@@ -1,11 +1,10 @@
-import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class CountersApiProvider {
 
-    Future<bool> fetchSetCountdown(String json) async {
+    Future<Map?> fetchPostCountdown(String json) async {
       print(json);
       final http.Response response = await http.post(
           'http://192.168.1.20:80/countdown',
@@ -15,13 +14,12 @@ class CountersApiProvider {
           body: json
       );
       if (response.statusCode == 200) {
-        print(jsonDecode(response.body).toString());
-        return true;
+        return jsonDecode(response.body);
       }
-      return false;
+      Exception("Can't fetch countdown POST");
     }
 
-    Future<bool> fetchSetRepeat(String json) async {
+    Future<Map?> fetchPostRepeat(String json) async {
       print(json);
       final http.Response response = await http.post(
           'http://192.168.1.20:80/stop-and-go',
@@ -31,9 +29,8 @@ class CountersApiProvider {
           body: json
       );
       if (response.statusCode == 200) {
-        print(jsonDecode(response.body).toString());
-        return true;
+        return jsonDecode(response.body);
       }
-      return false;
+      Exception("Can't fetch repeat POST");
     }
 }

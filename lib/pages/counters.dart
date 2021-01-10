@@ -98,7 +98,7 @@ class _CardInitSocket extends State<CardInitSocket> {
                 padding: const EdgeInsets.all(8.0),
                 child: MaterialButton(
                   onPressed: () {
-                    bloc.fetchInitCounter(this._initCounterData!);
+                    bloc.fetchPostCounter(this._initCounterData!);
                   },
                   child: Text(
                     "SEND REQUEST TO ESP32",
@@ -296,7 +296,7 @@ class _CardInitSocket extends State<CardInitSocket> {
           ),
           MaterialButton(
             onPressed: () {
-                bloc.fetchInitCounter(this._initCounterData!);
+                bloc.fetchPostCounter(this._initCounterData!);
             },
             child: Text(
               "SEND REQUEST TO ESP32",

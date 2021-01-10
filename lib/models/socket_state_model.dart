@@ -21,9 +21,7 @@ class SocketStateModel {
     this._mode = null;
   }
 
-  SocketStateModel.fromJson(Map<String, dynamic> parsedJson){
-    print(parsedJson);
-  }
+  void truncateDayOfWeekTimetable() => this._dayOfWeekTimetable = new Map();
 
   void setState(bool state) => this._state = state;
 
@@ -45,19 +43,11 @@ class SocketStateModel {
 
   get dayOfWeekTimetable => this._dayOfWeekTimetable;
 
-  void addTimetable(int day, String time, bool state, String id) {
+  void addTimetable(int day, String time, bool state, String? id) {
     if(this._dayOfWeekTimetable.containsKey(day) == false) {
       this._dayOfWeekTimetable[day] = [];
     }
     int idx = this._dayOfWeekTimetable[day]!.length;
     this._dayOfWeekTimetable[day]!.add(Timetable(idx, _index, day, time, state, id));
-  }
-
-  void initTimetable(int day, String time, bool state) {
-    if(this._dayOfWeekTimetable.containsKey(day) == false) {
-      this._dayOfWeekTimetable[day] = [];
-    }
-    int idx = this._dayOfWeekTimetable[day]!.length;
-    this._dayOfWeekTimetable[day]!.add(Timetable(idx, _index, day, time, state, null));
   }
 }

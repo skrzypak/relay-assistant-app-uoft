@@ -31,7 +31,7 @@ class TimetablePage extends StatelessWidget {
                   } else if (snapshot.hasError) {
                     return Text(snapshot.error.toString());
                   } else {
-                    bloc.fechTimetable();
+                    bloc.fetchGetTimetable();
                     return Center(child: CircularProgressIndicator());
                   }
                 },
@@ -411,7 +411,7 @@ class _InitTimetableCard extends State<InitTimetableCard> {
                     MaterialButton(
                       child: Text("ADD"),
                       onPressed: () {
-                        bloc.fechInitTimetable(data);
+                        bloc.fetchPostTimetable(data);
                       },
                     ),
                   ]),

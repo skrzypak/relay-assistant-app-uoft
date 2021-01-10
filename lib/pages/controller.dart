@@ -45,8 +45,8 @@ class ControllerPage extends StatelessWidget {
       _build.add(_buildButton(snapshot.data!.getSocketData(i)));
     }
 
-    _build.add(_buildButtonStatic("DISABLE",  () => bloc.fetchSetOffAllSockets()));
-    _build.add(_buildButtonStatic("ENABLE", () => bloc.fetchSetOnAllSockets()));
+    _build.add(_buildButtonStatic("DISABLE",  () => bloc.fetchPostOffAllSockets()));
+    _build.add(_buildButtonStatic("ENABLE", () => bloc.fetchPostOnAllSockets()));
 
     return _build;
   }
@@ -70,7 +70,7 @@ class ControllerPage extends StatelessWidget {
             onTap: () {
               var index = socketStateModel.index;
               socketStateModel.state ?
-                bloc.fetchSetOffSocket(index) : bloc.fetchSetOnSocket(index);
+                bloc.fetchPostOffSocket(index) : bloc.fetchPostOnSocket(index);
             },
             onDoubleTap: () => print("TODO:// Set counters"),
             onLongPress: () => print("TODO:// Set timetable"),

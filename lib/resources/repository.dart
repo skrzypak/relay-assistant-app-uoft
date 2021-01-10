@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:app/models/esp_data_model.dart';
+import 'package:app/models/timetable_model.dart';
 import 'package:app/resources/counters_api_provider.dart';
 import 'package:app/resources/timetable_api_provider.dart';
 import 'sockets_states_api_provider.dart';
@@ -12,13 +13,14 @@ class Repository {
   final _espDataApiProvider = EspDataApiProvider();
 
   Future<EspDataModel> fetchEspData() => _espDataApiProvider.fetchEspData();
-  Future<bool> fetchSetOffSocket(int num) => _socketsStatesApiProvider.fetchSetOffSocket(num);
-  Future<bool> fetchSetOnSocket(int num) => _socketsStatesApiProvider.fetchSetOnSocket(num);
-  Future<bool> fetchSetOffAllSockets() => _socketsStatesApiProvider.fetchSetOffAllSockets();
-  Future<bool> fetchSetOnAllSockets() => _socketsStatesApiProvider.fetchSetOnAllSockets();
+  Future<void> fetchPostOffSocket(int num) => _socketsStatesApiProvider.fetchPostOffSocket(num);
+  Future<void> fetchPostOnSocket(int num) => _socketsStatesApiProvider.fetchPostOnSocket(num);
+  Future<void> fetchPostOffAllSockets() => _socketsStatesApiProvider.fetchPostOffAllSockets();
+  Future<void> fetchPostOnAllSockets() => _socketsStatesApiProvider.fetchPostOnAllSockets();
 
-  Future<bool> fetchSetCountdown(String json) => _countersApiProvider.fetchSetCountdown(json);
-  Future<bool> fetchSetRepeat(String json) => _countersApiProvider.fetchSetRepeat(json);
+  Future<Map?> fetchPostCountdown(String json) => _countersApiProvider.fetchPostCountdown(json);
+  Future<Map?> fetchPostRepeat(String json) => _countersApiProvider.fetchPostRepeat(json);
 
-  Future<bool> fetchSetTimetable(String json) => _timetableApiProvider.fetchSetTimetable(json);
+  Future<Map?> fetchTimetable() => _timetableApiProvider.fetchTimetable();
+  Future<Map?> fetchSetTimetable(String json) => _timetableApiProvider.fetchPostTimetable(json);
 }
