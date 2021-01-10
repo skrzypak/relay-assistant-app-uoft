@@ -411,12 +411,7 @@ class _InitTimetableCard extends State<InitTimetableCard> {
                     MaterialButton(
                       child: Text("ADD"),
                       onPressed: () {
-                        print("TODO:// add");
-                        print(data.index);
-                        print(data.socket);
-                        print(data.time);
-                        print(data.day);
-                        print(data.state);
+                        bloc.fechInitTimetable(data);
                       },
                     ),
                   ]),

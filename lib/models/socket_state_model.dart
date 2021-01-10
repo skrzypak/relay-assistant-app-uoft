@@ -45,12 +45,12 @@ class SocketStateModel {
 
   get dayOfWeekTimetable => this._dayOfWeekTimetable;
 
-  void addTimetable(int day, String time, bool state) {
+  void addTimetable(int day, String time, bool state, String id) {
     if(this._dayOfWeekTimetable.containsKey(day) == false) {
       this._dayOfWeekTimetable[day] = [];
     }
     int idx = this._dayOfWeekTimetable[day]!.length;
-    this._dayOfWeekTimetable[day]!.add(Timetable(idx, _index, day, time, state, true));
+    this._dayOfWeekTimetable[day]!.add(Timetable(idx, _index, day, time, state, id));
   }
 
   void initTimetable(int day, String time, bool state) {
@@ -58,6 +58,6 @@ class SocketStateModel {
       this._dayOfWeekTimetable[day] = [];
     }
     int idx = this._dayOfWeekTimetable[day]!.length;
-    this._dayOfWeekTimetable[day]!.add(Timetable(idx, _index, day, time, state, false));
+    this._dayOfWeekTimetable[day]!.add(Timetable(idx, _index, day, time, state, null));
   }
 }

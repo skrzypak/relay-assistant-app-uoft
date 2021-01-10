@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'package:app/models/esp_data_model.dart';
 import 'package:app/resources/counters_api_provider.dart';
+import 'package:app/resources/timetable_api_provider.dart';
 import 'sockets_states_api_provider.dart';
 import 'esp_data_api_provider.dart';
 
 class Repository {
   final _socketsStatesApiProvider = SocketsStatesApiProvider();
   final _countersApiProvider = CountersApiProvider();
+  final _timetableApiProvider = TimetableApiProvider();
   final _espDataApiProvider = EspDataApiProvider();
 
   Future<EspDataModel> fetchEspData() => _espDataApiProvider.fetchEspData();
@@ -17,4 +19,6 @@ class Repository {
 
   Future<bool> fetchSetCountdown(String json) => _countersApiProvider.fetchSetCountdown(json);
   Future<bool> fetchSetRepeat(String json) => _countersApiProvider.fetchSetRepeat(json);
+
+  Future<bool> fetchSetTimetable(String json) => _timetableApiProvider.fetchSetTimetable(json);
 }

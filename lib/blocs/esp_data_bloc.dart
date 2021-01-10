@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app/models/init_counter_data_ui_.dart';
+import 'package:app/models/timetable_form_model.dart';
 import 'package:rxdart/rxdart.dart';
 import '../models/esp_data_model.dart';
 import '../resources/repository.dart';
@@ -28,7 +29,7 @@ class EspDataBloc {
 
   Future<bool> connectToEsp() async {
     if(this.socket == null) {
-      this._socket = await Socket.connect('192.168.1.20', 80);
+      //this._socket = await Socket.connect('192.168.1.20', 80);
       return true;
     }
     return false;
@@ -78,6 +79,17 @@ class EspDataBloc {
   fechTimetable() async {
     print("fechTimetable()");
     this._timetableFetcher.sink.add(this._espDataModel!);
+  }
+
+  fechInitTimetable(TimetableForm data) async {
+    bool success = await this._repository.fetchSetTimetable(data.toJson());
+
+    if(success) {
+      // TODO alert
+      this._timetableFetcher.sink.add(this._espDataModel!);
+    } else {
+      // TODO send err
+    }
   }
 
   fetchSetOffSocket(int num) async {

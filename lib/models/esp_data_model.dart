@@ -51,8 +51,8 @@ class EspDataModel {
   void addCountdown(int index, bool state, int time, bool running)
   => this._socketsDataList[index].setCountdown(state, time, running);
 
-  void addTimetable(int socket, int day, String time, bool state) {
-    this._socketsDataList[socket].addTimetable(day, time, state);
+  void addTimetable(int socket, int day, String time, bool state, String id) {
+    this._socketsDataList[socket].addTimetable(day, time, state, id);
   }
 
   List<Timetable> getDayOfWeekTimetable(int socket, int day) => this._socketsDataList[socket].dayOfWeekTimetable[day];
