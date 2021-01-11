@@ -17,9 +17,22 @@ abstract class ModeModel {
   bool getState() => this._state;
   int getTime() => this._time;
   String getTimeString() {
-    String res = "";
-    res = _time.toString();
-    return res;
+    String val = "";
+    int sec = _time;
+    // Get hour
+    int hour = (sec ~/ 3600).toInt();
+    sec -= (hour * 3600);
+    // Get min
+    int min = (sec ~/ 60).toInt();
+    sec -= min * 60;
+    // Get sec
+    if(hour < 10) val += "0";
+    val += "$hour:";
+    if(min < 10) val += "0";
+    val += "$min:";
+    if(sec < 10) val += "0";
+    val += sec.toString();
+    return val;
   }
   bool getRunning() => this._running;
   void setState(bool state) => this._state = state;

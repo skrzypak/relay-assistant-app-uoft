@@ -7,7 +7,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPage extends State<SettingsPage> {
-  String _currentIp = "192.168.1.23";
+  String _currentIp = "192.168.1.20";
   String _value = "";
   @override
   Widget build(BuildContext context) {
@@ -28,6 +28,7 @@ class _SettingsPage extends State<SettingsPage> {
                         _value = text;
                       },
                       autofocus: false,
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                       border: InputBorder.none,
                           hintText: _currentIp

@@ -17,7 +17,7 @@ Widget buildCardBottomStatistic(SocketStateModel data) {
     zonesTable.add(TableRow(
       children: [
         Center(child: Text((i+1).toString())),
-        Center(child: Text(dataMode.getZones()[i].toString())),
+        Center(child: Text(dataMode.getStringTimeZone(i))),
       ],
     ));
   }
@@ -59,7 +59,7 @@ Widget buildCardBottomStatistic(SocketStateModel data) {
                 ),
                 Center(
                   child: Text(
-                    dataMode.getCurrentZone().toString(),
+                    (dataMode.getCurrentZone()+1).toString(),
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 20,

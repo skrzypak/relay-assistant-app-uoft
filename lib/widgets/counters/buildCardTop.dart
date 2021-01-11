@@ -30,7 +30,7 @@ Widget buildCardTop(SocketStateModel data) {
                   data.getMode()!.getTimeString(),
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 50,
+                    fontSize: 30,
                   ),
                 ),
               ),

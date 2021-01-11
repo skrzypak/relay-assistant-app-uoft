@@ -203,7 +203,7 @@ class _CardInitSocket extends State<CardInitSocket> {
             children: [
               TextField(
                 decoration: new InputDecoration(
-                  labelText: "REPEATS (DEFAULT 1)".toUpperCase(),
+                  labelText: "REPEATS (0=>1)".toUpperCase(),
                   hintText: this._initCounterData!.repeats.toString(),
                 ),
                 keyboardType: TextInputType.number,
