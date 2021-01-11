@@ -13,14 +13,14 @@ class TimetablePage extends StatelessWidget {
         child: ListView(
           children: [
             InitTimetableCard(),
-            MaterialButton(
-              onPressed: () {
-                print("TODO:// send all new timetables");
-              },
-              child: Text(
-                "SEND ALL UPDATES TO ESP32",
-              ),
-            ),
+            // MaterialButton(
+            //   onPressed: () {
+            //     print("TODO:// send all new timetables");
+            //   },
+            //   child: Text(
+            //     "SEND ALL UPDATES TO ESP32",
+            //   ),
+            // ),
             SingleChildScrollView(
               physics: ScrollPhysics(),
               child: StreamBuilder(
@@ -42,9 +42,9 @@ class TimetablePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print("TODO:// send timetable data");
+          bloc.fetchGetTimetable();
         },
-        child: Icon(Icons.send),
+        child: Icon(Icons.refresh),
       ),
     );
   }
@@ -172,15 +172,8 @@ class TimetablePage extends StatelessWidget {
                     color: Colors.red,
                   ),
                   onTap: () {
-                    print("TODO:// delete timetable item");
-                    var idx = t.index;
-                    var socket = t.socket;
-                    var day = t.day;
-                    var time = t.time;
-                    print("index $idx");
-                    print("socket $socket");
-                    print("day $day");
-                    print("time $time");
+                    print("TODO:// confirmation");
+                    bloc.fetchDeleteTimetable(t.id);
                   },
                 ),
               ),

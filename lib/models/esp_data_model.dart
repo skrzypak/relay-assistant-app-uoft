@@ -89,9 +89,7 @@ class EspDataModel {
       if(s > 0) {
         state = true;
       } else state = false;
-      // TODO ID IMPORTANT
-      String id = "-1";
-      //String id = jsonSuccess[i]["id"] as String;
+      String id = jsonSuccess[i]["id"] as String;
       addTimetable(socket, day, time, state, id);
     }
   }

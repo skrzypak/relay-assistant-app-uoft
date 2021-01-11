@@ -13,9 +13,12 @@ class Repository {
   Future<void> fetchPostOffAllSockets() => _socketsStatesApiProvider.fetchPostOffAllSockets();
   Future<void> fetchPostOnAllSockets() => _socketsStatesApiProvider.fetchPostOnAllSockets();
 
+  Future<void> fetchDeleteCountdown(int num) => _countersApiProvider.fetchDeleteCountdown(num);
   Future<Map?> fetchPostCountdown(String json) => _countersApiProvider.fetchPostCountdown(json);
+  Future<void> fetchDeleteRepeat(int num) => _countersApiProvider.fetchDeleteRepeat(num);
   Future<Map?> fetchPostRepeat(String json) => _countersApiProvider.fetchPostRepeat(json);
 
-  Future<Map?> fetchTimetable() => _timetableApiProvider.fetchTimetable();
-  Future<Map?> fetchSetTimetable(String json) => _timetableApiProvider.fetchPostTimetable(json);
+  Future<Map?> fetchGetTimetable() => _timetableApiProvider.fetchGetTimetable();
+  Future<Map?> fetchPostTimetable(String json) => _timetableApiProvider.fetchPostTimetable(json);
+  Future<void> fetchDeleteTimetable(String id) => _timetableApiProvider.fetchDeleteTimetable(id);
 }

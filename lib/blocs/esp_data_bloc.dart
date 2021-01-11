@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:app/models/init_counter_data_ui_.dart';
+import 'package:app/models/modes/countdown_model.dart';
 import 'package:app/models/timetable_form_model.dart';
 import 'package:rxdart/rxdart.dart';
 import '../models/esp_data_model.dart';
@@ -14,6 +15,7 @@ class EspDataBloc {
   final _timetableFetcher = PublishSubject<EspDataModel>();
   EspDataModel _espDataModel = EspDataModel();
   Socket? _channel;
+  Map? _json;
 
   Stream<EspDataModel> get controllerFetcher => this._controllerFetcher.stream;
   Stream<EspDataModel> get countersFetcher => this._countersFetcher.stream;
@@ -29,16 +31,37 @@ class EspDataBloc {
   }
 
   fetch(String stream) async {
+      try {
+        this._json = jsonDecode(stream);
+        fetchController();
+        fetchCounters();
+      } catch(e) {
+        print(e);
+      }
+  }
+
+  fetchController() async {
     try {
-      Map? json = jsonDecode(stream);
-      //print(json);
-      if(json != null) {
-        Map? states = json["controller"];
-        Map? counters = json["counters"];
+      if(this._json != null) {
         for(int i = 0; i < 4 ; i++) {
-          int s = int.parse(states![i.toString()]);
+          int s = int.parse(this._json!["controller"]![i.toString()]);
           bool state = s > 0 ? true : false;
           this._espDataModel.socketsDataList[i].setState(state);
+        }
+        this._controllerFetcher.sink.add(this._espDataModel);
+      }
+    } catch(e) {
+      print(e);
+    }
+  }
+
+  fetchCounters() async {
+    try {
+      if(this._json != null) {
+        Map? counters = this._json!["counters"];
+        for(int i = 0; i < 4 ; i++) {
+          // Remove exits counter
+          this._espDataModel.getSocketData(i).removeMode();
           // Check counters
           if(counters == null) continue;
           if(counters[i.toString()] == null) continue;
@@ -63,22 +86,15 @@ class EspDataBloc {
           }
         }
       }
+      this._countersFetcher.sink.add(this._espDataModel);
     } catch(e) {
       print(e);
     }
   }
 
-  fetchController() async {
-    this._controllerFetcher.sink.add(this._espDataModel);
-  }
-
-  fetchCounters() async {
-    this._countersFetcher.sink.add(this._espDataModel);
-  }
-
   fetchGetTimetable() async {
     try{
-      Map? tmp = await this._repository.fetchTimetable();
+      Map? tmp = await this._repository.fetchGetTimetable();
       this._espDataModel.fetchHttpGetTimetable(tmp);
       this._timetableFetcher.sink.add(this._espDataModel);
     } catch(e) {
@@ -108,9 +124,31 @@ class EspDataBloc {
     }
   }
 
+  fetchDeleteCounter(int index) async {
+    try{
+      if(this._espDataModel.getSocketData(index).getMode() is CountdownModel) {
+        this._repository.fetchDeleteCountdown(index);
+      } else {
+        this._repository.fetchDeleteRepeat(index);
+      }
+    } catch(e) {
+      print(e);
+    }
+  }
+
+  fetchDeleteTimetable(String id) async {
+    try{
+      await this._repository.fetchDeleteTimetable(id);
+      // TODO
+      fetchGetTimetable();
+    } catch(e) {
+      print(e);
+    }
+  }
+
   fetchPostTimetable(TimetableForm data) async {
     try{
-      Map? tmp = await this._repository.fetchSetTimetable(data.toJson());
+      Map? tmp = await this._repository.fetchPostTimetable(data.toJson());
       if(tmp != null) {
         List<dynamic> jsonSuccess = tmp["success"];
         this._espDataModel.fetchHttpPostTimetable(jsonSuccess);
