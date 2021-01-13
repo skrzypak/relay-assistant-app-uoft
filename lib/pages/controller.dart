@@ -1,6 +1,5 @@
 import 'package:app/models/esp_data_model.dart';
 import 'package:app/models/socket_state_model.dart';
-import 'package:app/widgets/counters/connecting_indicator.dart';
 import 'package:flutter/material.dart';
 
 import '../blocs/esp_data_bloc.dart';
@@ -10,39 +9,26 @@ class ControllerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 25),
-      child: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder<String>(
-              stream: bloc.reconnectingFetcher,
-              builder: (context, AsyncSnapshot<String> snapshot) {
-                if(bloc.channel != null ||(snapshot.hasData && snapshot.data!.compareTo("_") == 0)) {
-                  return StreamBuilder(
-                    stream: bloc.controllerFetcher,
-                    builder: (context, AsyncSnapshot<EspDataModel> snapshot) {
-                      if (snapshot.hasData && !snapshot.hasError) {
-                        return GridView.count(
-                          primary: true,
-                          padding: const EdgeInsets.all(15.0),
-                          crossAxisSpacing: 8,
-                          mainAxisSpacing: 8,
-                          crossAxisCount: 2,
-                          children: _buildHomeSocketsButtons(snapshot),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text(snapshot.error.toString());
-                      } else {
-                        bloc.fetchController();
-                        return Center(child: CircularProgressIndicator());
-                      }
-                    },
-                  );
-                } else {
-                  return connectingIndicator(snapshot);
-                }
-              }),
-          ),
-        ],
+      child: Container(
+        child: StreamBuilder(
+            stream: bloc.controllerFetcher,
+            builder: (context, AsyncSnapshot<EspDataModel> snapshot) {
+              if (snapshot.hasData && !snapshot.hasError) {
+                return GridView.count(
+                  primary: true,
+                  padding: const EdgeInsets.all(15.0),
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  crossAxisCount: 2,
+                  children: _buildHomeSocketsButtons(snapshot),
+                );
+              } else if (snapshot.hasError) {
+                return Text(snapshot.error.toString());
+              } else {
+                bloc.fetchController();
+                return Center(child: CircularProgressIndicator());
+              }
+            }),
       ),
     );
   }

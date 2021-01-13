@@ -4,7 +4,6 @@ import 'package:app/models/esp_data_model.dart';
 import 'package:app/models/init_counter_data_ui_.dart';
 import 'package:app/models/socket_state_model.dart';
 import 'package:app/widgets/counters/buildCardReadySockets.dart';
-import 'package:app/widgets/counters/connecting_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
@@ -16,36 +15,23 @@ import '../models/socket_state_model.dart';
 class CountersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-          child: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder<String>(
-            stream: bloc.reconnectingFetcher,
-            builder: (context, AsyncSnapshot<String> snapshot) {
-              if(bloc.channel != null ||(snapshot.hasData && snapshot.data!.compareTo("_") == 0)) {
-                return StreamBuilder(
-                  stream: bloc.countersFetcher,
-                  builder: (context, AsyncSnapshot<EspDataModel> snapshot) {
-                    if (snapshot.hasData) {
-                      return _buildList(snapshot);
-                    } else if (snapshot.hasError) {
-                      return Text(snapshot.error.toString());
-                    } else {
-                      bloc.fetchCounters();
-                      return Center(child: CircularProgressIndicator());
-                    }
-                  },
-                );
-              } else {
-                return connectingIndicator(snapshot);
-              }
-            }
-            ),
-          ),
-        ],
-      )),
+    return Container(
+      child: StreamBuilder(
+        stream: bloc.countersFetcher,
+        builder: (context, AsyncSnapshot<EspDataModel> snapshot) {
+          if (snapshot.hasData) {
+            return SingleChildScrollView(
+                physics: ScrollPhysics(),
+                child: _buildList(snapshot),
+            );
+          } else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          } else {
+            bloc.fetchCounters();
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 
@@ -54,6 +40,7 @@ class CountersPage extends StatelessWidget {
       itemCount: snapshot.data!.socketsDataList.length,
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         ModeModel? mode = snapshot.data!.getSocketData(index).getMode();
         if (mode == null)

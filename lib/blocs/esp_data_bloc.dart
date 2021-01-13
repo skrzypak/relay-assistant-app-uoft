@@ -35,10 +35,16 @@ class EspDataBloc {
 
   reconnect() async {
     String espIp =  await _storage.readEspIp();
+    if(espIp == "") {
+      espIp = "192.168.1.20";
+      this._storage.writeEspIp(espIp);
+    }
     try {
+      if(this.channel != null) {
+        this._channel!.close();
+      }
       this._channel = null;
-      if(espIp == "") espIp = "192.168.1.20";
-      this._reconnectingFetcher.sink.add("Connecting to ESP32: $espIp ...");
+      this._reconnectingFetcher.sink.add("$espIp");
       this.channel = await Socket.connect(espIp, 81);
       this._reconnectingFetcher.sink.add("_");
       (this.channel!).listen(this.dataHandler,
@@ -50,6 +56,7 @@ class EspDataBloc {
       await Future.delayed(Duration(seconds: 1));
       reconnect();
     }
+    return;
   }
 
   void dataHandler(data){

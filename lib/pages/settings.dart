@@ -14,42 +14,49 @@ class _SettingsPage extends State<SettingsPage> {
   String _currentIp = "";
   var _ipController = TextEditingController();
 
+  void setIpAndReconnect(String ip) async {
+
+    await widget._storage.writeEspIp(ip).then((value) => {
+      setState(() {
+        _currentIp = ip;
+      }),
+    });
+
+    await bloc.reconnect();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15),
-      child: Container (
-        child: Center(
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.95,
-                child: TextField (
-                  controller: _ipController,
-                  onSubmitted: (text) {
-                    widget._storage.writeEspIp(text).then((value) => {
-                      setState(() {
-                         _currentIp = text;
-                      }),
-                      _ipController.clear(),
-                      bloc.reconnect()
-                    });
-                  },
-                  autofocus: false,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: _currentIp,
-                      prefixIcon: Icon(
-                        Icons.developer_board,
-                        size: 28.0,
-                      ),
-                      suffixIcon: IconButton(
-                        onPressed: () => _ipController.clear(),
-                        icon: Icon(
-                            Icons.clear,
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Container (
+            child: Center(
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    child: TextField (
+                      controller: _ipController,
+                      onSubmitted: (text) => this.setIpAndReconnect(text),
+                      autofocus: false,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: _currentIp,
+                          prefixIcon: Icon(
+                            Icons.developer_board,
+                            size: 28.0,
+                          ),
+                          suffixIcon: IconButton(
+                            onPressed: () => _ipController.clear(),
+                            icon: Icon(
+                                Icons.clear,
+                            ),
                         ),
+                      ),
                     ),
                   ),
                 ),
