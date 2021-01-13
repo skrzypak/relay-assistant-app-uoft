@@ -1,3 +1,4 @@
+import 'package:app/blocs/esp_data_bloc.dart';
 import 'package:flutter/material.dart';
 import './special/storage.dart';
 
@@ -31,7 +32,8 @@ class _SettingsPage extends State<SettingsPage> {
                       setState(() {
                          _currentIp = text;
                       }),
-                      _ipController.clear()
+                      _ipController.clear(),
+                      bloc.reconnect()
                     });
                   },
                   autofocus: false,

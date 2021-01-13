@@ -13,14 +13,6 @@ class TimetablePage extends StatelessWidget {
         child: ListView(
           children: [
             InitTimetableCard(),
-            // MaterialButton(
-            //   onPressed: () {
-            //     print("TODO:// send all new timetables");
-            //   },
-            //   child: Text(
-            //     "SEND ALL UPDATES TO ESP32",
-            //   ),
-            // ),
             SingleChildScrollView(
               physics: ScrollPhysics(),
               child: StreamBuilder(
@@ -32,7 +24,12 @@ class TimetablePage extends StatelessWidget {
                     return Text(snapshot.error.toString());
                   } else {
                     bloc.fetchGetTimetable();
-                    return Center(child: CircularProgressIndicator());
+                    return Container(
+                        height: 250,
+                        child: Center(
+                            child: CircularProgressIndicator()
+                        )
+                    );
                   }
                 },
               ),

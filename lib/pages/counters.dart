@@ -4,6 +4,7 @@ import 'package:app/models/esp_data_model.dart';
 import 'package:app/models/init_counter_data_ui_.dart';
 import 'package:app/models/socket_state_model.dart';
 import 'package:app/widgets/counters/buildCardReadySockets.dart';
+import 'package:app/widgets/counters/connecting_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
@@ -20,22 +21,27 @@ class CountersPage extends StatelessWidget {
           child: Column(
         children: [
           Expanded(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: StreamBuilder(
-                stream: bloc.countersFetcher,
-                builder: (context, AsyncSnapshot<EspDataModel> snapshot) {
-                  if (snapshot.hasData) {
-                    return _buildList(snapshot);
-                  } else if (snapshot.hasError) {
-                    return Text(snapshot.error.toString());
-                  } else {
-                    bloc.fetchCounters();
-                    return Center(child: CircularProgressIndicator());
-                  }
-                },
-              ),
+            child: StreamBuilder<String>(
+            stream: bloc.reconnectingFetcher,
+            builder: (context, AsyncSnapshot<String> snapshot) {
+              if(bloc.channel != null ||(snapshot.hasData && snapshot.data!.compareTo("_") == 0)) {
+                return StreamBuilder(
+                  stream: bloc.countersFetcher,
+                  builder: (context, AsyncSnapshot<EspDataModel> snapshot) {
+                    if (snapshot.hasData) {
+                      return _buildList(snapshot);
+                    } else if (snapshot.hasError) {
+                      return Text(snapshot.error.toString());
+                    } else {
+                      bloc.fetchCounters();
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  },
+                );
+              } else {
+                return connectingIndicator(snapshot);
+              }
+            }
             ),
           ),
         ],

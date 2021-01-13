@@ -7,12 +7,17 @@ import 'package:app/models/timetable_form_model.dart';
 import 'package:rxdart/rxdart.dart';
 import '../models/esp_data_model.dart';
 import '../resources/repository.dart';
+import '../pages/special/storage.dart';
 
 class EspDataBloc {
+  Storage _storage = Storage();
   final _repository = Repository();
+
   final _controllerFetcher = PublishSubject<EspDataModel>();
   final _countersFetcher = PublishSubject<EspDataModel>();
   final _timetableFetcher = PublishSubject<EspDataModel>();
+  final _reconnectingFetcher = PublishSubject<String>();
+
   EspDataModel _espDataModel = EspDataModel();
   Socket? _channel;
   Map? _json;
@@ -20,24 +25,51 @@ class EspDataBloc {
   Stream<EspDataModel> get controllerFetcher => this._controllerFetcher.stream;
   Stream<EspDataModel> get countersFetcher => this._countersFetcher.stream;
   Stream<EspDataModel> get timetableFetcher => this._timetableFetcher.stream;
+  Stream<String> get reconnectingFetcher => this._reconnectingFetcher.stream;
 
   Socket? get channel => this._channel;
 
-  // TODO connection
-  Future<void> connectToEsp() async {
+  set channel(Socket? s) {
+    this._channel = s;
+  }
 
-    if(this._channel == null)
-      this._channel = await Socket.connect('192.168.1.20', 81);
+  reconnect() async {
+    String espIp =  await _storage.readEspIp();
+    try {
+      this._channel = null;
+      if(espIp == "") espIp = "192.168.1.20";
+      this._reconnectingFetcher.sink.add("Connecting to ESP32: $espIp ...");
+      this.channel = await Socket.connect(espIp, 81);
+      this._reconnectingFetcher.sink.add("_");
+      (this.channel!).listen(this.dataHandler,
+          onError: this.errorHandler,
+          cancelOnError: false
+      );
+    } catch(e) {
+      print(e);
+      await Future.delayed(Duration(seconds: 1));
+      reconnect();
+    }
+  }
+
+  void dataHandler(data){
+    String stream = String.fromCharCodes(data);
+    this.fetch(stream);
+  }
+
+  void errorHandler(error, StackTrace trace){
+    print("$error");
+    this.reconnect();
   }
 
   fetch(String stream) async {
-      try {
-        this._json = jsonDecode(stream);
-        fetchController();
-        fetchCounters();
-      } catch(e) {
-        print(e);
-      }
+    try {
+      this._json = jsonDecode(stream);
+      fetchController();
+      fetchCounters();
+    } catch(e) {
+      print(e);
+    }
   }
 
   fetchController() async {
@@ -199,6 +231,7 @@ class EspDataBloc {
 
   dispose() {
     print("dispose()");
+    this._reconnectingFetcher.close();
     this._controllerFetcher.close();
     this._countersFetcher.close();
     this._timetableFetcher.close();
