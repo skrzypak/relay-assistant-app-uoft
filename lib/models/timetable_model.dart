@@ -9,7 +9,7 @@ class Timetable {
   String? _time;
   bool? _state;
 
-  Timetable(int index, int socket, int day, String time, bool state, String? id) {
+  Timetable(int? index, int socket, int day, String time, bool state, String? id) {
     this._index = index;
     this._socket = socket;
     this._day = day;
@@ -19,11 +19,14 @@ class Timetable {
   }
 
   get id => this._id;
-  get index => this._index;
+  int? get index => this._index;
   int? get socket => this._socket;
   int? get day => this._day;
   String? get time => this._time;
   bool? get state => this._state;
+
+  @protected
+  set index(int? idx) => this._index = idx;
 
   @protected
   set socket(int? socket) => this._socket = socket;

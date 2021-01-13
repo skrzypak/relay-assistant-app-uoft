@@ -108,7 +108,7 @@ class EspDataBloc {
 
       if(data.numOfValidZones == 0) {
         response = await this._repository.fetchPostCountdown(data.toJson());
-      } else if(data.numOfValidZones > 1) {
+      } else if(data.numOfValidZones > 0) {
         response = await this._repository.fetchPostRepeat(data.toJson());
       }
 

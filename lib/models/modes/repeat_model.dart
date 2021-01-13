@@ -42,5 +42,11 @@ class RepeatModel extends ModeModel {
   int getRepeats() => this._repeats;
   void setCurrentZone(int zone) => this._zone = zone;
   void setZones(List<int> zones) => this._zones = zones;
-  void setRepeats(int repeats) => this._repeats = repeats;
+  bool setRepeats(int repeats) {
+    if(repeats > 0) {
+      this._repeats = repeats;
+      return true;
+    }
+    return false;
+  }
 }

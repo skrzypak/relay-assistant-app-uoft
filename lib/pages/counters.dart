@@ -203,15 +203,24 @@ class _CardInitSocket extends State<CardInitSocket> {
             children: [
               TextField(
                 decoration: new InputDecoration(
-                  labelText: "REPEATS (0=>1)".toUpperCase(),
+                  labelText: "REPEATS".toUpperCase(),
                   hintText: this._initCounterData!.repeats.toString(),
                 ),
                 keyboardType: TextInputType.number,
+                maxLines: 1,
+                maxLength: 9,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                onSubmitted: (rep) {
-                  setState(() {
-                    this._initCounterData!.setRepeat(int.parse(rep));
-                  });
+                onChanged: (rep) {
+                  try{
+                    var val = int.parse(rep);
+                    if(val > 0) {
+                      setState(() {
+                        this._initCounterData!.setRepeat(val);
+                      });
+                    }
+                  } catch(e) {
+                    print(e);
+                  }
                 },
               ),
               Container(
@@ -260,7 +269,7 @@ class _CardInitSocket extends State<CardInitSocket> {
                           Expanded(
                             flex: 1,
                             child: Center(
-                                child: Text(index.toString())
+                                child: Text((index+1).toString())
                             ),
                           ),
                           Expanded(

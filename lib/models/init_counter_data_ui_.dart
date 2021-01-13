@@ -6,7 +6,7 @@ class InitCounterDataUi {
 
   List<DateTime> _zonesLastExtra = [DateTime(2000, 1, 1, 0, 0, 0)];
   bool _state = false;
-  int _repeats = 0;
+  int _repeats = 1;
 
   InitCounterDataUi(int index, String name) {
     this._index = index;

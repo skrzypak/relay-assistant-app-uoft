@@ -44,10 +44,26 @@ class SocketStateModel {
   get dayOfWeekTimetable => this._dayOfWeekTimetable;
 
   void addTimetable(int day, String time, bool state, String? id) {
+
     if(this._dayOfWeekTimetable.containsKey(day) == false) {
-      this._dayOfWeekTimetable[day] = [];
+      this._dayOfWeekTimetable[day] = [Timetable(0, _index, day, time, state, id)];
+      return;
     }
+
     int idx = this._dayOfWeekTimetable[day]!.length;
-    this._dayOfWeekTimetable[day]!.add(Timetable(idx, _index, day, time, state, id));
+    var timetable = Timetable(idx, _index, day, time, state, id);
+
+    int genIdx = 0;
+
+    for(int i = 0; i < this._dayOfWeekTimetable[day]!.length; i++) {
+      Timetable item = this._dayOfWeekTimetable[day]![i];
+      if(time.compareTo(item.time!) > -1)
+        genIdx++;
+      else break;
+    }
+
+    print(genIdx);
+
+    this._dayOfWeekTimetable[day]!.insert(genIdx, timetable);
   }
 }
