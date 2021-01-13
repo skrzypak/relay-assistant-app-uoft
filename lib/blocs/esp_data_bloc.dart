@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -5,9 +6,10 @@ import 'package:app/models/init_counter_data_ui_.dart';
 import 'package:app/models/modes/countdown_model.dart';
 import 'package:app/models/timetable_form_model.dart';
 import 'package:rxdart/rxdart.dart';
+
 import '../models/esp_data_model.dart';
-import '../resources/repository.dart';
 import '../pages/special/storage.dart';
+import '../resources/repository.dart';
 
 class EspDataBloc {
   Storage _storage = Storage();
@@ -21,16 +23,37 @@ class EspDataBloc {
   EspDataModel _espDataModel = EspDataModel();
   Socket? _channel;
   Map? _json;
+  int _handlerPongSeconds = 0;
+  Timer? _handlerTimerInc;
 
   Stream<EspDataModel> get controllerFetcher => this._controllerFetcher.stream;
+
   Stream<EspDataModel> get countersFetcher => this._countersFetcher.stream;
+
   Stream<EspDataModel> get timetableFetcher => this._timetableFetcher.stream;
+
   Stream<String> get reconnectingFetcher => this._reconnectingFetcher.stream;
 
   Socket? get channel => this._channel;
 
   set channel(Socket? s) {
     this._channel = s;
+  }
+
+  _remakeTimer() {
+    if(this._handlerTimerInc != null) {
+      this._handlerTimerInc!.cancel();
+    }
+    this._handlerPongSeconds = 0;
+    this._handlerTimerInc = new Timer.periodic(new Duration(seconds: 1), (_) {
+      this._handlerPongSeconds++;
+      if(this._handlerPongSeconds == 4) {
+        print("Do reconnect()");
+        this._handlerTimerInc!.cancel();
+        this._handlerPongSeconds = 0;
+        this.reconnect();
+      }
+    });
   }
 
   reconnect() async {
@@ -40,17 +63,18 @@ class EspDataBloc {
       this._storage.writeEspIp(espIp);
     }
     try {
-      if(this.channel != null) {
+      if (this._channel != null) {
         this._channel!.close();
       }
       this._channel = null;
       this._reconnectingFetcher.sink.add("$espIp");
-      this.channel = await Socket.connect(espIp, 81);
+      this._channel = await Socket.connect(espIp, 81);
       this._reconnectingFetcher.sink.add("_");
+
+      _remakeTimer();
+
       (this.channel!).listen(this.dataHandler,
-          onError: this.errorHandler,
-          cancelOnError: false
-      );
+          onError: this.errorHandler, cancelOnError: false);
     } catch(e) {
       print(e);
       await Future.delayed(Duration(seconds: 1));
@@ -61,6 +85,7 @@ class EspDataBloc {
 
   void dataHandler(data){
     String stream = String.fromCharCodes(data);
+    this._handlerPongSeconds = 0;
     this.fetch(stream);
   }
 
@@ -224,7 +249,6 @@ class EspDataBloc {
     } catch (e) {
       print(e);
     }
-
   }
 
   fetchPostOnAllSockets() async {
@@ -233,7 +257,6 @@ class EspDataBloc {
     } catch (e) {
       print(e);
     }
-
   }
 
   dispose() {
@@ -244,6 +267,7 @@ class EspDataBloc {
     this._timetableFetcher.close();
     if(this.channel != null) {
       this._channel!.close();
+      this._channel = null;
     }
   }
 

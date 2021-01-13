@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
           );
           this.scaffoldMessengerKey.currentState!.showSnackBar(snackBar);
         }
-    });
+    }, cancelOnError: false, onError: (e) => print(e));
 
   }
 
