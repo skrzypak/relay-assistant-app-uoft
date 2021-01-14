@@ -3,7 +3,7 @@
     package="com.app">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="app"
+        android:label="PStrip IoT"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
        tools:targetApi="O">
