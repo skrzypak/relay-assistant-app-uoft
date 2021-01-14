@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+import 'package:app/blocs/esp_data_bloc.dart';
 import 'package:http/http.dart' as http;
 
 class SocketsStatesApiProvider {
 
   Future<void> fetchPostOffSocket(int num) async {
     final http.Response response = await http.put(
-        'http://192.168.1.20:80/off',
+        'http://${bloc.currentPowerStripIp}:80/off',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
@@ -19,7 +20,7 @@ class SocketsStatesApiProvider {
 
   Future<void> fetchPostOnSocket(int num) async {
     final http.Response response = await http.put(
-        'http://192.168.1.20:80/on',
+        'http://${bloc.currentPowerStripIp}:80/on',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
@@ -31,7 +32,7 @@ class SocketsStatesApiProvider {
 
   Future<void> fetchPostOffAllSockets() async {
     final http.Response response = await http.put(
-        'http://192.168.1.20:80/off',
+        'http://${bloc.currentPowerStripIp}:80/off',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
@@ -43,7 +44,7 @@ class SocketsStatesApiProvider {
 
   Future<void> fetchPostOnAllSockets() async {
     final http.Response response = await http.put(
-        'http://192.168.1.20:80/on',
+        'http://${bloc.currentPowerStripIp}:80/on',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },

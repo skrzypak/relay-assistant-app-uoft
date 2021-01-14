@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:app/blocs/esp_data_bloc.dart';
 import 'package:http/http.dart' as http;
 
 class TimetableApiProvider {
 
     Future<Map?> fetchGetTimetable() async {
       final http.Response response = await http.get(
-          'http://192.168.1.20:80/timetable/dayofweek'
+          'http://${bloc.currentPowerStripIp}:80/timetable/dayofweek'
       );
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
@@ -17,7 +18,7 @@ class TimetableApiProvider {
     Future<Map?> fetchPostTimetable(String json) async {
       print(json);
       final http.Response response = await http.post(
-          'http://192.168.1.20:80/timetable/dayofweek',
+          'http://${bloc.currentPowerStripIp}:80/timetable/dayofweek',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -30,7 +31,7 @@ class TimetableApiProvider {
     }
 
     Future<void> fetchDeleteTimetable(String id) async {
-      var request = http.Request('DELETE', Uri.parse('http://192.168.1.20/timetable/dayofweek'));
+      var request = http.Request('DELETE', Uri.parse('http://${bloc.currentPowerStripIp}/timetable/dayofweek'));
       request.bodyFields = {
         'id': '$id'
       };

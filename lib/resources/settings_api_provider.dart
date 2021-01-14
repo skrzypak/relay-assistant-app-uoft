@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:app/blocs/esp_data_bloc.dart';
 import 'package:http/http.dart' as http;
 
 class SettingsApiProvider {
   Future<Map?> fetchGetStartupSocketsStates() async {
     final http.Response response = await http.get(
-        'http://192.168.1.20:80/startup/sockets'
+        'http://${bloc.currentPowerStripIp}:80/startup/sockets'
     );
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -15,7 +16,7 @@ class SettingsApiProvider {
 
   Future<void> fetchPutStartupSocketStates(int index, bool state) async {
     final http.Response response = await http.put(
-        state ? 'http://192.168.1.20:80/startup/socket/on' : 'http://192.168.1.20:80/startup/socket/off',
+        state ? 'http://${bloc.currentPowerStripIp}:80/startup/socket/on' : 'http://${bloc.currentPowerStripIp}:80/startup/socket/off',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },

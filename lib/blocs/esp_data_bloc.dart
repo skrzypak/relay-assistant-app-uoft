@@ -25,6 +25,7 @@ class EspDataBloc {
   Map? _json;
   int _handlerPongSeconds = 0;
   Timer? _handlerTimerInc;
+  String _currentPowerStripIp = "";
 
   Stream<EspDataModel> get controllerFetcher => this._controllerFetcher.stream;
 
@@ -39,6 +40,8 @@ class EspDataBloc {
   Storage get storage => this._storage;
 
   EspDataModel get espDataModel => this._espDataModel;
+
+  String get currentPowerStripIp => this._currentPowerStripIp;
 
   set channel(Socket? s) {
     this._channel = s;
@@ -67,9 +70,9 @@ class EspDataBloc {
         this._channel = null;
       }
 
-      String espIp = await _storage.readEspIp();
-      this._reconnectingFetcher.sink.add("$espIp");
-      this._channel = await Socket.connect(espIp, 81);
+      this._currentPowerStripIp = await _storage.readEspIp();
+      this._reconnectingFetcher.sink.add("${this._currentPowerStripIp}");
+      this._channel = await Socket.connect(this._currentPowerStripIp, 81);
       this._reconnectingFetcher.sink.add("_");
 
       _remakeTimer();

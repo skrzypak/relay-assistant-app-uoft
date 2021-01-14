@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:app/blocs/esp_data_bloc.dart';
 import 'package:http/http.dart' as http;
 
 class CountersApiProvider {
@@ -7,7 +8,7 @@ class CountersApiProvider {
     Future<Map?> fetchPostCountdown(String json) async {
       print(json);
       final http.Response response = await http.post(
-          'http://192.168.1.20:80/countdown',
+          'http://${bloc.currentPowerStripIp}:80/countdown',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -22,7 +23,7 @@ class CountersApiProvider {
     Future<Map?> fetchPostRepeat(String json) async {
       print(json);
       final http.Response response = await http.post(
-          'http://192.168.1.20:80/stop-and-go',
+          'http://${bloc.currentPowerStripIp}:80/stop-and-go',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -35,7 +36,7 @@ class CountersApiProvider {
     }
 
     Future<void> fetchDeleteCountdown(int num) async {
-      var request = http.Request('DELETE', Uri.parse('http://192.168.1.20/countdown'));
+      var request = http.Request('DELETE', Uri.parse('http://${bloc.currentPowerStripIp}:80/countdown'));
       request.bodyFields = {
         'socket': '$num'
       };
@@ -54,7 +55,7 @@ class CountersApiProvider {
   }
 
   Future<void> fetchDeleteRepeat(int num) async {
-    var request = http.Request('DELETE', Uri.parse('http://192.168.1.20/stop-and-go'));
+    var request = http.Request('DELETE', Uri.parse('http://${bloc.currentPowerStripIp}/stop-and-go'));
     request.bodyFields = {
       'socket': '$num'
     };
