@@ -38,6 +38,8 @@ class EspDataBloc {
 
   Storage get storage => this._storage;
 
+  EspDataModel get espDataModel => this._espDataModel;
+
   set channel(Socket? s) {
     this._channel = s;
   }
@@ -255,6 +257,26 @@ class EspDataBloc {
       await this._repository.fetchPostOnAllSockets();
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<Map?> fetchGetStartupSocketsStates() async {
+    try{
+      Map? item = await this._repository.fetchGetStartupSocketsStates();
+      return item;
+    } catch(e) {
+      print(e);
+      return null;
+    }
+  }
+
+  Future<bool> fetchPutStartupSocketStates(int index, bool state) async {
+    try{
+      await this._repository.fetchPutStartupSocketStates(index, state);
+      return true;
+    } catch(e) {
+      print(e);
+      return false;
     }
   }
 
