@@ -5,43 +5,49 @@ import 'package:flutter/material.dart';
 import '../blocs/esp_data_bloc.dart';
 import '../models/timetable_model.dart';
 
-class TimetablePage extends StatelessWidget {
+class TimetablePage extends StatefulWidget {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
+  TimetablePage({Key? key}) : super(key: key);
+  @override
+  _TimetablePage createState() => _TimetablePage();
+}
+
+class _TimetablePage extends State<TimetablePage> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: ListView(
-          children: [
-            InitTimetableCard(),
-            SingleChildScrollView(
-              physics: ScrollPhysics(),
-              child: StreamBuilder(
-                stream: bloc.timetableFetcher,
-                builder: (context, AsyncSnapshot<EspDataModel> snapshot) {
-                  if (snapshot.hasData) {
-                    return _buildSocketsList(snapshot);
-                  } else if (snapshot.hasError) {
-                    return Text(snapshot.error.toString());
-                  } else {
-                    bloc.fetchGetTimetable();
-                    return Container(
-                        height: 250,
-                        child: Center(
-                            child: CircularProgressIndicator()
-                        )
-                    );
-                  }
-                },
+      body:  RefreshIndicator(
+        key: widget._refreshIndicatorKey,
+        onRefresh: () => bloc.fetchGetTimetable(),
+        child: Container(
+          child: ListView(
+            children: [
+              InitTimetableCard(),
+              SingleChildScrollView(
+                physics: ScrollPhysics(),
+                child: StreamBuilder(
+                  stream: bloc.timetableFetcher,
+                  builder: (context, AsyncSnapshot<EspDataModel> snapshot) {
+                    if (snapshot.hasData) {
+                      return _buildSocketsList(snapshot);
+                    } else if (snapshot.hasError) {
+                      return Text(snapshot.error.toString());
+                    } else {
+                      bloc.fetchGetTimetable();
+                      return Container(
+                          height: 250,
+                          child: Center(
+                              child: CircularProgressIndicator()
+                          )
+                      );
+                    }
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          bloc.fetchGetTimetable();
-        },
-        child: Icon(Icons.refresh),
       ),
     );
   }

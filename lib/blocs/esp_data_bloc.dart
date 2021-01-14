@@ -36,6 +36,8 @@ class EspDataBloc {
 
   Socket? get channel => this._channel;
 
+  Storage get storage => this._storage;
+
   set channel(Socket? s) {
     this._channel = s;
   }
@@ -57,16 +59,13 @@ class EspDataBloc {
   }
 
   reconnect() async {
-    String espIp =  await _storage.readEspIp();
-    if(espIp == "") {
-      espIp = "192.168.1.20";
-      this._storage.writeEspIp(espIp);
-    }
     try {
       if (this._channel != null) {
         this._channel!.close();
+        this._channel = null;
       }
-      this._channel = null;
+
+      String espIp = await _storage.readEspIp();
       this._reconnectingFetcher.sink.add("$espIp");
       this._channel = await Socket.connect(espIp, 81);
       this._reconnectingFetcher.sink.add("_");

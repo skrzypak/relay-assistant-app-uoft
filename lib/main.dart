@@ -7,6 +7,11 @@ import 'package:flutter/material.dart';
 
 void main() async {
   runApp(MyApp());
+  String espIp =  await bloc.storage.readEspIp();
+  if(espIp == "") {
+    espIp = "192.168.1.20";
+    await bloc.storage.writeEspIp(espIp);
+  }
   bloc.reconnect();
 }
 
@@ -53,7 +58,7 @@ class _HomePageState extends State<HomePage> {
           this.scaffoldMessengerKey.currentState!.removeCurrentSnackBar();
           this._lastIpReconnection = ip;
           var snackBar = SnackBar(
-            content: Text("Try connect to: ${this._lastIpReconnection}"),
+            content: Text("Connect to: ${this._lastIpReconnection}"),
             duration: Duration(days: 365),
           );
           this.scaffoldMessengerKey.currentState!.showSnackBar(snackBar);
