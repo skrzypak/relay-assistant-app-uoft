@@ -218,14 +218,21 @@ class EspDataBloc {
     try{
       Map? tmp = await this._repository.fetchPostTimetable(data.toJson());
       if(tmp != null) {
-        List<dynamic> jsonSuccess = tmp["success"];
+        List<dynamic>? jsonSuccess = tmp["success"];
         this._espDataModel.fetchHttpPostTimetable(jsonSuccess);
         this._timetableFetcher.sink.add(this._espDataModel);
-        //TODO
-        //List<dynamic> jsonError = tmp["error"];
-      } else print("Some error while init new timetable");
+        List<dynamic>? jsonError = tmp["error"];
+        if(jsonError == null) return;
+        else {
+          String msg = jsonError[0]["msg"];
+          if(msg.compareTo("This socket, day and time already exists in database") == 0) {
+            throw(0);
+          }
+        }
+      }
+      throw("FATAL ERROR, CHECK CONNECTION");
     } catch(e) {
-      print(e);
+      throw(e);
     }
   }
 

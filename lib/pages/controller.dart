@@ -14,14 +14,17 @@ class ControllerPage extends StatelessWidget {
             stream: bloc.controllerFetcher,
             builder: (context, AsyncSnapshot<EspDataModel> snapshot) {
               if (snapshot.hasData && !snapshot.hasError) {
-                return GridView.count(
-                  primary: true,
-                  padding: const EdgeInsets.all(15.0),
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                  crossAxisCount: 2,
-                  children: _buildHomeSocketsButtons(snapshot),
-                );
+                return OrientationBuilder(builder: (context, orientation) {
+                  return Container(
+                    child: GridView.count(
+                      padding: const EdgeInsets.all(15.0),
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                      crossAxisCount: orientation == Orientation.portrait ? 2 : 3,
+                      children: _buildHomeSocketsButtons(snapshot),
+                    ),
+                  );
+                });
               } else if (snapshot.hasError) {
                 return Text(snapshot.error.toString());
               } else {

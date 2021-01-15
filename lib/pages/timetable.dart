@@ -406,8 +406,23 @@ class _InitTimetableCard extends State<InitTimetableCard> {
                     ),
                     MaterialButton(
                       child: Text("ADD"),
-                      onPressed: () {
-                        bloc.fetchPostTimetable(data);
+                      onPressed: () async {
+                        try {
+                          bool success = await bloc.fetchPostTimetable(data);
+                          if(success == false) {
+                            bloc.fetchGetTimetable();
+                          }
+                        } catch (e) {
+                          String? msg;
+                          if(e == 0) {
+                            bloc.fetchGetTimetable();
+                            msg = "Record already exists";
+                          } else msg = "Some error, check connection";
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(msg.toString().toUpperCase()),
+                            duration: Duration(seconds: 3),
+                          ));
+                        }
                       },
                     ),
                   ]),
