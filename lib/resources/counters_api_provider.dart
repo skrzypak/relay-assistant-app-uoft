@@ -23,7 +23,7 @@ class CountersApiProvider {
     Future<Map?> fetchPostRepeat(String json) async {
       print(json);
       final http.Response response = await http.post(
-          'http://${bloc.currentPowerStripIp}:80/stop-and-go',
+          'http://${bloc.currentPowerStripIp}:80/repeats',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -55,7 +55,7 @@ class CountersApiProvider {
   }
 
   Future<void> fetchDeleteRepeat(int num) async {
-    var request = http.Request('DELETE', Uri.parse('http://${bloc.currentPowerStripIp}/stop-and-go'));
+    var request = http.Request('DELETE', Uri.parse('http://${bloc.currentPowerStripIp}/repeats'));
     request.bodyFields = {
       'socket': '$num'
     };

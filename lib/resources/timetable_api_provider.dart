@@ -7,7 +7,7 @@ class TimetableApiProvider {
 
     Future<Map?> fetchGetTimetable() async {
       final http.Response response = await http.get(
-          'http://${bloc.currentPowerStripIp}:80/timetable/dayofweek'
+          'http://${bloc.currentPowerStripIp}:80/timetable'
       );
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
@@ -18,7 +18,7 @@ class TimetableApiProvider {
     Future<Map?> fetchPostTimetable(String json) async {
       print(json);
       final http.Response response = await http.post(
-          'http://${bloc.currentPowerStripIp}:80/timetable/dayofweek',
+          'http://${bloc.currentPowerStripIp}:80/timetable',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -31,7 +31,7 @@ class TimetableApiProvider {
     }
 
     Future<void> fetchDeleteTimetable(String id) async {
-      var request = http.Request('DELETE', Uri.parse('http://${bloc.currentPowerStripIp}/timetable/dayofweek'));
+      var request = http.Request('DELETE', Uri.parse('http://${bloc.currentPowerStripIp}/timetable'));
       request.bodyFields = {
         'id': '$id'
       };
